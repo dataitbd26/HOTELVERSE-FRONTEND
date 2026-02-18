@@ -39,10 +39,12 @@ import {
   MdSupervisedUserCircle,
   MdHistory,
   MdSecurity,
-  MdComputer
+  MdComputer,
+  MdInsertChart
 } from "react-icons/md";
 
 const useMenuItems = () => {
+
   const allItems = [
     {
       title: "Dashboard",
@@ -50,52 +52,174 @@ const useMenuItems = () => {
       icon: <MdDashboard className="text-lg" />,
     },
     // --- Front Office (Unique Items Only) ---
+   {
+  title: "Front Office",
+  icon: <MdDesktopMac className="text-lg" />,
+  list: [
     {
-      title: "Front Office",
-      icon: <MdDesktopMac className="text-lg" />,
-      list: [
-        {
-          title: "Reservation",
-          path: "/front-office/reservation",
-          icon: <MdDateRange className="text-lg" />,
-        },
-        {
-          title: "Walk In",
-          path: "/front-office/walk-in",
-          icon: <MdPeople className="text-lg" />,
-        },
-        {
-          title: "Today's Events",
-          path: "/front-office/events",
-          icon: <MdEventNote className="text-lg" />,
-        },
-        {
-          title: "Guest Self Services",
-          path: "/front-office/self-services",
-          icon: <MdAssignment className="text-lg" />,
-        },
-        {
-          title: "Guest Profiles",
-          path: "/front-office/profiles",
-          icon: <MdPeople className="text-lg" />,
-        },
-        {
-          title: "Reservation List",
-          path: "/front-office/reservation-list",
-          icon: <MdDescription className="text-lg" />,
-        },
-        {
-          title: "Availability",
-          path: "/front-office/availability",
-          icon: <MdEvent className="text-lg" />,
-        },
-        {
-          title: "Views",
-          path: "/front-office/views",
-          icon: <MdViewList className="text-lg" />,
-        },
-      ],
+      title: "Reservation",
+      path: "/front-office/reservation",
+      icon: <MdDateRange className="text-lg" />,
     },
+    {
+      title: "Walk In",
+      path: "/front-office/walk-in",
+      icon: <MdPeople className="text-lg" />,
+    },
+    {
+      title: "Today's Events",
+      path: "/front-office/events",
+      icon: <MdEventNote className="text-lg" />,
+    },
+    {
+      title: "Guest Self Services",
+      path: "/front-office/self-services",
+      icon: <MdAssignment className="text-lg" />,
+    },
+    {
+      title: "Guest Profiles",
+      path: "/front-office/profiles",
+      icon: <MdPeople className="text-lg" />,
+    },
+    {
+      title: "Reservation List",
+      path: "/front-office/reservation-list",
+      icon: <MdDescription className="text-lg" />,
+    },
+    // --- Sub-menu: Availability ---
+    {
+      title: "Availability",
+      icon: <MdEvent className="text-lg" />,
+     list: [
+    {
+      title: "Reservation",
+      path: "/front-office/reservation",
+      icon: <MdDateRange className="text-lg" />,
+    },
+    {
+      title: "Walk In",
+      path: "/front-office/walk-in",
+      icon: <MdPeople className="text-lg" />,
+    },
+    {
+      title: "Today's Events",
+      path: "/front-office/events",
+      icon: <MdEventNote className="text-lg" />,
+    },
+    {
+      title: "Room Status",
+      path: "/front-office/availability/room-status",
+      icon: <MdEvent className="text-lg" />,
+    },
+    {
+      title: "Occupancy Forecast",
+      path: "/front-office/availability/occupancy-forecast",
+      icon: <MdEvent className="text-lg" />,
+    },
+    {
+      title: "Blocked Rooms",
+      path: "/front-office/availability/blocked-rooms",
+      icon: <MdEvent className="text-lg" />,
+    },
+    {
+      title: "No Show Report",
+      path: "/front-office/availability/no-show-report",
+      icon: <MdEvent className="text-lg" />,
+    },
+    {
+      title: "Arrival Report",
+      path: "/front-office/availability/arrival-report",
+      icon: <MdEvent className="text-lg" />,
+    },
+    {
+      title: "Due Out Today",
+      path: "/front-office/availability/due-out-today",
+      icon: <MdEvent className="text-lg" />,
+    },
+    {
+      title: "Night Audit Process",
+      path: "/front-office/availability/night-audit",
+      icon: <MdEvent className="text-lg" />,
+    },
+]
+    },
+    // --- Sub-menu: Views ---
+    {
+      title: "Views",
+      icon: <MdViewList className="text-lg" />,
+     list: [
+    {
+      title: "Checked In Guest",
+      path: "/front-office/views/checked-in",
+      icon: <MdViewList className="text-lg" />,
+    },
+    {
+      title: "In House Guest",
+      path: "/front-office/views/in-house",
+      icon: <MdViewList className="text-lg" />,
+    },
+    {
+      title: "Settlement Pending",
+      path: "/front-office/views/settlement-pending",
+      icon: <MdViewList className="text-lg" />,
+    },
+    {
+      title: "Opened Folio",
+      path: "/front-office/views/opened-folio",
+      icon: <MdViewList className="text-lg" />,
+    },
+    {
+      title: "Collection Report",
+      path: "/front-office/views/collection-report",
+      icon: <MdViewList className="text-lg" />,
+    },
+    {
+      title: "Checkout Pending",
+      path: "/front-office/views/checkout-pending",
+      icon: <MdViewList className="text-lg" />,
+    },
+    {
+      title: "Checked Out Rooms",
+      path: "/front-office/views/checked-out",
+      icon: <MdViewList className="text-lg" />,
+    },
+    {
+      title: "Group Reservations",
+      path: "/front-office/views/group-reservations",
+      icon: <MdViewList className="text-lg" />,
+    },
+]
+    },
+    {
+      title: "Reports & Graphs",
+      path: "/front-office/reports",
+      icon: <MdInsertChart className="text-lg" />,
+    },
+    // --- Sub-menu: Incidental Invoice ---
+    {
+      title: "Incidental Invoice",
+      icon: <MdReceipt className="text-lg" />,
+      children: [
+        { title: "Rate Plan", path: "/front-office/incidental/rate-plan" },
+        { title: "Incidental Invoice", path: "/front-office/incidental/invoice" },
+      ]
+    },
+    {
+      title: "Setup",
+      path: "/front-office/setup",
+      icon: <MdSettings className="text-lg" />, // Generic icon if not specified
+    },
+    // --- Sub-menu: Settings ---
+    {
+      title: "Settings",
+      icon: <MdSettings className="text-lg" />,
+      children: [
+        { title: "Front Office", path: "/front-office/settings/general" },
+        { title: "Print Setting", path: "/front-office/settings/print" },
+      ]
+    },
+  ],
+},
     // --- House Keeping (Unique Items Only) ---
     {
       title: "House Keeping",

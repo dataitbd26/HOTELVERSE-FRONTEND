@@ -17,7 +17,7 @@ import Availability from "../pages/Frontoffice/Availability";
 import Views from "../pages/Frontoffice/Views";
 import DailyStatus from "../pages/HouseKeeping/DailyStatus";
 import RoomCleaning from "../pages/HouseKeeping/RoomCleaning";
-import BlockedRooms from "../pages/HouseKeeping/BlockedRooms";
+
 import WorkOrders from "../pages/HouseKeeping/WorkOrders";
 import LostAndFound from "../pages/HouseKeeping/LostAndFound";
 import POS from "../pages/PointOfSale/POS";
@@ -60,6 +60,13 @@ import UserRoles from "../pages/Administration/UserRoles";
 import Users from "../pages/Administration/Users";
 import LoginActivites from "../pages/Administration/LoginActivites";
 import UserActivite from "../pages/Administration/UserActivite";
+import RoomStatus from "../pages/Availability/RoomStatus";
+import OccupancyForecast from "../pages/Availability/OccupancyForecast";
+import BlockedRooms from "../pages/Availability/BlockedRooms";
+import NoShowReport from "../pages/Availability/NoShowReport";
+import ArrivalReport from "../pages/Availability/ArrivalReport";
+import DueOutToday from "../pages/Availability/DueOutToday";
+import NightAuditProcess from "../pages/Availability/NightAuditProcess";
 
 
 
@@ -112,10 +119,85 @@ export const router = createBrowserRouter([
         path: "front-office/reservation-list",
         element: <PrivateRoot><ReservationList /></PrivateRoot>,
       },
-      {
-        path: "front-office/availability",
-        element: <PrivateRoot><Availability /></PrivateRoot>,
-      },
+     {
+  path: "front-office",
+  children: [
+    // ... your other front-office routes (Reservation, Walk In, etc.)
+
+    // --- NESTED  ROUTE ---
+    {
+      path: "availability",
+      children: [
+        // 1. Main Page: Matches "/front-office/availability"
+        {
+          index: true, 
+          element: (
+            <PrivateRoot>
+              <Availability />
+            </PrivateRoot>
+          ),
+        },
+        // 2. Sub-Pages: Match "/front-office/availability/..."
+        {
+          path: "room-status",
+          element: (
+            <PrivateRoot>
+              <RoomStatus />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "occupancy-forecast",
+          element: (
+            <PrivateRoot>
+              <OccupancyForecast />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "blocked-rooms",
+          element: (
+            <PrivateRoot>
+              <BlockedRooms />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "no-show-report",
+          element: (
+            <PrivateRoot>
+              <NoShowReport />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "arrival-report",
+          element: (
+            <PrivateRoot>
+              <ArrivalReport />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "due-out-today",
+          element: (
+            <PrivateRoot>
+              <DueOutToday />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "night-audit",
+          element: (
+            <PrivateRoot>
+              <NightAuditProcess />
+            </PrivateRoot>
+          ),
+        },
+      ],
+    },
+  ],
+},
       {
         path: "front-office/views",
         element: <PrivateRoot><Views /></PrivateRoot>,
