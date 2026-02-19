@@ -5,7 +5,7 @@ import Login from "../pages/Login/Login";
 import Root from "./Root/Root";
 import PrivateRoot from "./Root/PrivateRoot";
 import Aroot from "./Root/Aroot";
-import Home from "../pages/Dashboard/Home";
+
 import Reservation from "../pages/Frontoffice/Reservation";
 
 import GuestProfiles from "../pages/Frontoffice/GuestProfiles";
@@ -67,6 +67,11 @@ import NoShowReport from "../pages/Availability/NoShowReport";
 import ArrivalReport from "../pages/Availability/ArrivalReport";
 import DueOutToday from "../pages/Availability/DueOutToday";
 import NightAuditProcess from "../pages/Availability/NightAuditProcess";
+import CheckedInGuest from "../pages/Frontoffice/views/CheckedInGuest";
+import Home from "../pages/Dashboard/Home";
+
+
+
 
 
 
@@ -77,6 +82,10 @@ export const router = createBrowserRouter([
     element: <Root />,
     errorElement: <Error404 />,
     children: [
+   
+   
+
+      // If you still need the Login page, you can add it on a separate path like this:
       {
         path: "/",
         element: <Login />,
@@ -91,7 +100,7 @@ export const router = createBrowserRouter([
       // --- Dashboard ---
       {
         path: "dashboard",
-        element: <PrivateRoot><Home /></PrivateRoot>,
+        element: <PrivateRoot><Home/></PrivateRoot>,
       },
 
       // --- Front Office ---
@@ -198,10 +207,20 @@ export const router = createBrowserRouter([
     },
   ],
 },
-      {
-        path: "front-office/views",
-        element: <PrivateRoot><Views /></PrivateRoot>,
-      },
+     // --- 2. VIEWS SUB-MENU (From D3.PNG / D6.PNG) ---
+          {
+            path: "views",
+            children: [
+              { path: "checked-in", element: <PrivateRoot><CheckedInGuest /></PrivateRoot> },
+              // { path: "in-house", element: <PrivateRoot><InHouseGuest /></PrivateRoot> },
+              // { path: "settlement-pending", element: <PrivateRoot><SettlementPending /></PrivateRoot> },
+              // { path: "opened-folio", element: <PrivateRoot><OpenedFolio /></PrivateRoot> },
+              // { path: "collection-report", element: <PrivateRoot><CollectionReport /></PrivateRoot> },
+              // { path: "checkout-pending", element: <PrivateRoot><CheckoutPending /></PrivateRoot> },
+              // { path: "checked-out", element: <PrivateRoot><CheckedOutRooms /></PrivateRoot> },
+              // { path: "group-reservations", element: <PrivateRoot><GroupReservations /></PrivateRoot> },
+            ],
+          },
 
       // --- House Keeping ---
       {

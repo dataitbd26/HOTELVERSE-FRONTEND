@@ -91,21 +91,8 @@ const useMenuItems = () => {
       title: "Availability",
       icon: <MdEvent className="text-lg" />,
      list: [
-    {
-      title: "Reservation",
-      path: "/front-office/reservation",
-      icon: <MdDateRange className="text-lg" />,
-    },
-    {
-      title: "Walk In",
-      path: "/front-office/walk-in",
-      icon: <MdPeople className="text-lg" />,
-    },
-    {
-      title: "Today's Events",
-      path: "/front-office/events",
-      icon: <MdEventNote className="text-lg" />,
-    },
+   
+  
     {
       title: "Room Status",
       path: "/front-office/availability/room-status",
@@ -220,6 +207,7 @@ const useMenuItems = () => {
     },
   ],
 },
+
     // --- House Keeping (Unique Items Only) ---
     {
       title: "House Keeping",
