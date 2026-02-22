@@ -67,7 +67,7 @@ import NoShowReport from "../pages/Availability/NoShowReport";
 import ArrivalReport from "../pages/Availability/ArrivalReport";
 import DueOutToday from "../pages/Availability/DueOutToday";
 import NightAuditProcess from "../pages/Availability/NightAuditProcess";
-import CheckedInGuest from "../pages/Frontoffice/views/CheckedInGuest";
+
 import Home from "../pages/Dashboard/Home";
 import RatePlan from "../pages/HouseKeeping/IncidentalInvoice/RatePlan";
 import IncidentalInvoiceDetails from "../pages/HouseKeeping/IncidentalInvoice/IncidentalInvoiceDetails";
@@ -77,6 +77,15 @@ import RemarksSetup from "../pages/HouseKeeping/Setup/RemarksSetup";
 import WorkOrderCategory from "../pages/HouseKeeping/Setup/WorkOrderCategory";
 import UnitsSetup from "../pages/HouseKeeping/Setup/UnitsSetup";
 import HouseKeepingSettings from "../pages/HouseKeeping/HouseKeepingSettings";
+import InHouseGuest from "../pages/Frontoffice/views/InHouseGuest";
+import CheckedInGuest from "../pages/Frontoffice/views/CheckedInGuest";
+import SettlementPending from "../pages/Frontoffice/views/SettlementPending";
+import OpenedFolio from "../pages/Frontoffice/views/OpenedFolio";
+import CollectionReport from "../pages/Frontoffice/views/CollectionReport";
+import CheckoutPending from "../pages/Frontoffice/views/CheckoutPending";
+import CheckedOutRooms from "../pages/Frontoffice/views/CheckedOutRooms";
+import GroupReservations from "../pages/Frontoffice/views/GroupReservations";
+
 
 
 
@@ -137,16 +146,12 @@ export const router = createBrowserRouter([
         path: "front-office/reservation-list",
         element: <PrivateRoot><ReservationList /></PrivateRoot>,
       },
-     {
+{
   path: "front-office",
   children: [
-    // ... your other front-office routes (Reservation, Walk In, etc.)
-
-    // --- NESTED  ROUTE ---
     {
       path: "availability",
       children: [
-        // 1. Main Page: Matches "/front-office/availability"
         {
           index: true, 
           element: (
@@ -155,7 +160,6 @@ export const router = createBrowserRouter([
             </PrivateRoot>
           ),
         },
-        // 2. Sub-Pages: Match "/front-office/availability/..."
         {
           path: "room-status",
           element: (
@@ -214,22 +218,36 @@ export const router = createBrowserRouter([
         },
       ],
     },
+
+         // --- 2. VIEWS SUB-MENU (From D3.PNG / D6.PNG) ---
+         {
+  path: "views",
+  children: [
+    { path: "checked-in", element: <PrivateRoot><CheckedInGuest /></PrivateRoot> },
+    { path: "in-house", element: <PrivateRoot><InHouseGuest /></PrivateRoot> },
+    { path: "settlement-pending", element: <PrivateRoot><SettlementPending /></PrivateRoot> },
+    { path: "opened-folio", element: <PrivateRoot><OpenedFolio /></PrivateRoot> },
+    { path: "collection-report", element: <PrivateRoot><CollectionReport /></PrivateRoot> },
+    { path: "checkout-pending", element: <PrivateRoot><CheckoutPending /></PrivateRoot> },
+    { path: "checked-out", element: <PrivateRoot><CheckedOutRooms /></PrivateRoot> },
+    { path: "group-reservations", element: <PrivateRoot><GroupReservations /></PrivateRoot> },
   ],
 },
-     // --- 2. VIEWS SUB-MENU (From D3.PNG / D6.PNG) ---
-          {
-            path: "views",
-            children: [
-              { path: "checked-in", element: <PrivateRoot><CheckedInGuest /></PrivateRoot> },
-              // { path: "in-house", element: <PrivateRoot><InHouseGuest /></PrivateRoot> },
-              // { path: "settlement-pending", element: <PrivateRoot><SettlementPending /></PrivateRoot> },
-              // { path: "opened-folio", element: <PrivateRoot><OpenedFolio /></PrivateRoot> },
-              // { path: "collection-report", element: <PrivateRoot><CollectionReport /></PrivateRoot> },
-              // { path: "checkout-pending", element: <PrivateRoot><CheckoutPending /></PrivateRoot> },
-              // { path: "checked-out", element: <PrivateRoot><CheckedOutRooms /></PrivateRoot> },
-              // { path: "group-reservations", element: <PrivateRoot><GroupReservations /></PrivateRoot> },
-            ],
-          },
+
+// {
+//   path: "incidental",
+//   children: [
+//     { path: "rate-plan", element: <PrivateRoot><RatePlan /></PrivateRoot> },
+//     { path: "invoice", element: <PrivateRoot><IncidentalInvoice /></PrivateRoot> },
+//   ],
+// },
+
+
+
+
+
+  ],
+},
 
       // --- House Keeping ---
       {

@@ -131,11 +131,13 @@ const useMenuItems = () => {
     },
 ]
     },
-    // --- Sub-menu: Views ---
-    {
-      title: "Views",
-      icon: <MdViewList className="text-lg" />,
-     list: [
+
+
+    //  Views ---
+   {
+  title: "Views",
+  icon: <MdViewList className="text-lg" />,
+  list: [
     {
       title: "Checked In Guest",
       path: "/front-office/views/checked-in",
@@ -176,8 +178,10 @@ const useMenuItems = () => {
       path: "/front-office/views/group-reservations",
       icon: <MdViewList className="text-lg" />,
     },
-]
-    },
+  ],
+}, 
+
+
     {
       title: "Reports & Graphs",
       path: "/front-office/reports",
@@ -187,21 +191,46 @@ const useMenuItems = () => {
     {
       title: "Incidental Invoice",
       icon: <MdReceipt className="text-lg" />,
-      children: [
+      list: [
         { title: "Rate Plan", path: "/front-office/incidental/rate-plan" },
         { title: "Incidental Invoice", path: "/front-office/incidental/invoice" },
       ]
     },
-    {
+  {
       title: "Setup",
-      path: "/front-office/setup",
-      icon: <MdSettings className="text-lg" />, // Generic icon if not specified
+      icon: <MdSettingsSuggest className="text-lg" />, 
+      list: [
+        {
+          title: "Rooms & Category",
+          path: "/front-office/setup/rooms-category",
+        },
+        {
+          title: "Room Rate",
+          path: "/front-office/setup/room-rate",
+        },
+        {
+          title: "Charge",
+          path: "/front-office/setup/charge",
+        },
+        {
+          title: "Corporate Client",
+          path: "/front-office/setup/corporate-client",
+        },
+        {
+          title: "Travel Agent",
+          path: "/front-office/setup/travel-agent",
+        },
+        {
+          title: "Business Source",
+          path: "/front-office/setup/business-source",
+        },
+      ],
     },
     // --- Sub-menu: Settings ---
     {
       title: "Settings",
       icon: <MdSettings className="text-lg" />,
-      children: [
+      list: [
         { title: "Front Office", path: "/front-office/settings/general" },
         { title: "Print Setting", path: "/front-office/settings/print" },
       ]
