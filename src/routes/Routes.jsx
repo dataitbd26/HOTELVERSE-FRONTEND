@@ -69,7 +69,7 @@ import DueOutToday from "../pages/Availability/DueOutToday";
 import NightAuditProcess from "../pages/Availability/NightAuditProcess";
 
 import Home from "../pages/Dashboard/Home";
-import RatePlan from "../pages/HouseKeeping/IncidentalInvoice/RatePlan";
+
 import IncidentalInvoiceDetails from "../pages/HouseKeeping/IncidentalInvoice/IncidentalInvoiceDetails";
 import HouseKeepers from "../pages/HouseKeeping/Setup/HouseKeepers";
 import StatusSetup from "../pages/HouseKeeping/Setup/StatusSetup";
@@ -85,6 +85,16 @@ import CollectionReport from "../pages/Frontoffice/views/CollectionReport";
 import CheckoutPending from "../pages/Frontoffice/views/CheckoutPending";
 import CheckedOutRooms from "../pages/Frontoffice/views/CheckedOutRooms";
 import GroupReservations from "../pages/Frontoffice/views/GroupReservations";
+import RatePlan from "../pages/Frontoffice/IncidentalInvoice/RatePlan";
+import IncidentalInvoice from "../pages/Frontoffice/IncidentalInvoice/IncidentalInvoice";
+import RoomsCategory from "../pages/Frontoffice/Setup/RoomsCategory";
+import RoomRate from "../pages/Frontoffice/Setup/RoomRate";
+import Charge from "../pages/Frontoffice/Setup/Charge";
+import CorporateClient from "../pages/Frontoffice/Setup/CorporateClient";
+import TravelAgent from "../pages/Frontoffice/Setup/TravelAgent";
+import BusinessSource from "../pages/Frontoffice/Setup/BusinessSource";
+import GeneralSettings from "../pages/Frontoffice/Settings/GeneralSettings";
+import PrintSettings from "../pages/Frontoffice/Settings/PrintSettings";
 
 
 
@@ -234,13 +244,34 @@ export const router = createBrowserRouter([
   ],
 },
 
-// {
-//   path: "incidental",
-//   children: [
-//     { path: "rate-plan", element: <PrivateRoot><RatePlan /></PrivateRoot> },
-//     { path: "invoice", element: <PrivateRoot><IncidentalInvoice /></PrivateRoot> },
-//   ],
-// },
+{
+  path: "incidental",
+  children: [
+    { path: "rate-plan", element: <PrivateRoot><RatePlan /></PrivateRoot> },
+    { path: "invoice", element: <PrivateRoot><IncidentalInvoice /></PrivateRoot> },
+  ],
+},
+
+{
+  path: "setup",
+  children: [
+    { path: "rooms-category", element: <PrivateRoot><RoomsCategory /></PrivateRoot> },
+    { path: "room-rate", element: <PrivateRoot><RoomRate /></PrivateRoot> },
+    { path: "charge", element: <PrivateRoot><Charge /></PrivateRoot> },
+    { path: "corporate-client", element: <PrivateRoot><CorporateClient /></PrivateRoot> },
+    { path: "travel-agent", element: <PrivateRoot><TravelAgent /></PrivateRoot> },
+    { path: "business-source", element: <PrivateRoot><BusinessSource /></PrivateRoot> },
+  ],
+},
+
+{
+  path: "settings",
+  children: [
+    { path: "general", element: <PrivateRoot><GeneralSettings /></PrivateRoot> },
+    { path: "print", element: <PrivateRoot><PrintSettings /></PrivateRoot> },
+  ],
+},
+
 
 
 
