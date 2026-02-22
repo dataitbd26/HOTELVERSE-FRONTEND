@@ -69,6 +69,15 @@ import DueOutToday from "../pages/Availability/DueOutToday";
 import NightAuditProcess from "../pages/Availability/NightAuditProcess";
 import CheckedInGuest from "../pages/Frontoffice/views/CheckedInGuest";
 import Home from "../pages/Dashboard/Home";
+import RatePlan from "../pages/HouseKeeping/IncidentalInvoice/RatePlan";
+import IncidentalInvoiceDetails from "../pages/HouseKeeping/IncidentalInvoice/IncidentalInvoiceDetails";
+import HouseKeepers from "../pages/HouseKeeping/Setup/HouseKeepers";
+import StatusSetup from "../pages/HouseKeeping/Setup/StatusSetup";
+import RemarksSetup from "../pages/HouseKeeping/Setup/RemarksSetup";
+import WorkOrderCategory from "../pages/HouseKeeping/Setup/WorkOrderCategory";
+import UnitsSetup from "../pages/HouseKeeping/Setup/UnitsSetup";
+import HouseKeepingSettings from "../pages/HouseKeeping/HouseKeepingSettings";
+
 
 
 
@@ -243,6 +252,134 @@ export const router = createBrowserRouter([
         path: "house-keeping/lost-found",
         element: <PrivateRoot><LostAndFound /></PrivateRoot>,
       },
+      {
+      path: "house-keeping",
+      children: [
+        // --- Main Top-Level Pages ---
+        {
+          path: "daily-status",
+          element: (
+            <PrivateRoot>
+              <DailyStatus />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "room-cleaning",
+          element: (
+            <PrivateRoot>
+              <RoomCleaning />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "blocked-rooms",
+          element: (
+            <PrivateRoot>
+              <BlockedRooms />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "work-orders",
+          element: (
+            <PrivateRoot>
+              <WorkOrders />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "lost-found",
+          element: (
+            <PrivateRoot>
+              <LostAndFound />
+            </PrivateRoot>
+          ),
+        },
+
+        // --- Incidental Invoice Dropdown ---
+        {
+          path: "incidental-invoice",
+          children: [
+            {
+              path: "rate-plan",
+              element: (
+                <PrivateRoot>
+                  <RatePlan />
+                </PrivateRoot>
+              ),
+            },
+            {
+              path: "details", 
+              element: (
+                <PrivateRoot>
+                  <IncidentalInvoiceDetails />
+                </PrivateRoot>
+              ),
+            },
+          ],
+        },
+
+        // --- Setup Dropdown ---
+        {
+          path: "setup",
+          children: [
+            {
+              path: "house-keepers",
+              element: (
+                <PrivateRoot>
+                  <HouseKeepers />
+                </PrivateRoot>
+              ),
+            },
+            {
+              path: "status",
+              element: (
+                <PrivateRoot>
+                  <StatusSetup />
+                </PrivateRoot>
+              ),
+            },
+            {
+              path: "remarks",
+              element: (
+                <PrivateRoot>
+                  <RemarksSetup />
+                </PrivateRoot>
+              ),
+            },
+            {
+              path: "work-order-category",
+              element: (
+                <PrivateRoot>
+                  <WorkOrderCategory />
+                </PrivateRoot>
+              ),
+            },
+            {
+              path: "units",
+              element: (
+                <PrivateRoot>
+                  <UnitsSetup />
+                </PrivateRoot>
+              ),
+            },
+          ],
+        },
+
+        // --- Settings ---
+        {
+          path: "settings",
+          element: (
+            <PrivateRoot>
+              <HouseKeepingSettings />
+            </PrivateRoot>
+          ),
+        },
+      ],
+    },
+
+      // next task
 
       // --- Point Of Sale ---
       {

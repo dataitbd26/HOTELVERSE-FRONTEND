@@ -40,7 +40,8 @@ import {
   MdHistory,
   MdSecurity,
   MdComputer,
-  MdInsertChart
+  MdInsertChart,
+  MdSettingsSuggest
 } from "react-icons/md";
 
 const useMenuItems = () => {
@@ -212,33 +213,81 @@ const useMenuItems = () => {
     {
       title: "House Keeping",
       icon: <MdCleaningServices className="text-lg" />,
+     list: [
+    {
+      title: "Daily Status",
+      path: "/house-keeping/daily-status",
+      icon: <MdDescription className="text-lg" />,
+    },
+    {
+      title: "Room Cleaning",
+      path: "/house-keeping/room-cleaning",
+      icon: <MdCleaningServices className="text-lg" />,
+    },
+    {
+      title: "Blocked Rooms",
+      path: "/house-keeping/blocked-rooms",
+      icon: <MdSecurity className="text-lg" />,
+    },
+    {
+      title: "Work Orders",
+      path: "/house-keeping/work-orders",
+      icon: <MdAssignment className="text-lg" />,
+    },
+    {
+      title: "Lost And Found",
+      path: "/house-keeping/lost-found",
+      icon: <MdHistory className="text-lg" />,
+    },
+    // --- NEW: Incidental Invoice Dropdown ---
+    {
+      title: "Incidental Invoice",
+      icon: <MdReceipt className="text-lg" />, 
       list: [
         {
-          title: "Daily Status",
-          path: "/house-keeping/daily-status",
-          icon: <MdDescription className="text-lg" />,
+          title: "Rate Plan",
+          path: "/house-keeping/incidental-invoice/rate-plan",
         },
         {
-          title: "Room Cleaning",
-          path: "/house-keeping/room-cleaning",
-          icon: <MdCleaningServices className="text-lg" />,
-        },
-        {
-          title: "Blocked Rooms",
-          path: "/house-keeping/blocked-rooms",
-          icon: <MdSecurity className="text-lg" />,
-        },
-        {
-          title: "Work Orders",
-          path: "/house-keeping/work-orders",
-          icon: <MdAssignment className="text-lg" />,
-        },
-        {
-          title: "Lost And Found",
-          path: "/house-keeping/lost-found",
-          icon: <MdHistory className="text-lg" />,
+          title: "Incidental Invoice",
+          path: "/house-keeping/incidental-invoice/details",
         },
       ],
+    },
+    // --- NEW: Setup Dropdown ---
+    {
+      title: "Setup",
+      icon: <MdSettingsSuggest className="text-lg" />,
+      list: [
+        {
+          title: "House Keepers",
+          path: "/house-keeping/setup/house-keepers",
+        },
+        {
+          title: "Status",
+          path: "/house-keeping/setup/status",
+        },
+        {
+          title: "Remarks",
+          path: "/house-keeping/setup/remarks",
+        },
+        {
+          title: "Work Order Category",
+          path: "/house-keeping/setup/work-order-category",
+        },
+        {
+          title: "Units",
+          path: "/house-keeping/setup/units",
+        },
+      ],
+    },
+    // --- NEW: Settings ---
+    {
+      title: "Settings",
+      path: "/house-keeping/settings",
+      icon: <MdSettings className="text-lg" />,
+    },
+  ],
     },
     // --- Point Of Sale (Unique Items Only) ---
     {
