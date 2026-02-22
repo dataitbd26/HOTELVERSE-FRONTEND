@@ -95,6 +95,17 @@ import TravelAgent from "../pages/Frontoffice/Setup/TravelAgent";
 import BusinessSource from "../pages/Frontoffice/Setup/BusinessSource";
 import GeneralSettings from "../pages/Frontoffice/Settings/GeneralSettings";
 import PrintSettings from "../pages/Frontoffice/Settings/PrintSettings";
+import PosSettings from "../pages/PointOfSale/PosSettings";
+import DashBoard from "../pages/PointOfSale/DashBoard";
+import Reports from "../pages/PointOfSale/Reports";
+import Outlets from "../pages/PointOfSale/Setup/Outlets";
+import Tables from "../pages/PointOfSale/Setup/Tables";
+import ItemCategory from "../pages/PointOfSale/Setup/ItemCategory";
+import Department from "../pages/PointOfSale/Setup/Department";
+import KotPrintingSetup from "../pages/PointOfSale/Setup/KotPrintingSetup";
+import Stewards from "../pages/PointOfSale/Setup/Stewards";
+import Slots from "../pages/PointOfSale/Setup/Slots";
+
 
 
 
@@ -430,7 +441,11 @@ export const router = createBrowserRouter([
 
       // next task
 
-      // --- Point Of Sale ---
+      // --- Point Of Sale --: -
+      {
+        path: "pos/dashboard",
+         element: <PrivateRoot><DashBoard /></PrivateRoot>,
+      },
       {
         path: "pos/main",
         element: <PrivateRoot><POS /></PrivateRoot>,
@@ -443,6 +458,98 @@ export const router = createBrowserRouter([
         path: "pos/kitchen-display",
         element: <PrivateRoot><KitchenDisplaySystem /></PrivateRoot>,
       },
+       {
+        path: "/pos/Reports",
+        element: <PrivateRoot>< Reports/></PrivateRoot>,
+      },
+      
+
+{
+  path: "pos",
+  children: [
+    // --- Setup Dropdown ---
+    {
+      path: "setup",
+      children: [
+        {
+          path: "outlets",
+          element: (
+            <PrivateRoot>
+              <Outlets />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "tables",
+          element: (
+            <PrivateRoot>
+              <Tables />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "item-category",
+          element: (
+            <PrivateRoot>
+              <ItemCategory />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "rate-plan",
+          element: (
+            <PrivateRoot>
+              <RatePlan />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "department",
+          element: (
+            <PrivateRoot>
+              <Department />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "kot-printing",
+          element: (
+            <PrivateRoot>
+              <KotPrintingSetup />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "slots",
+          element: (
+            <PrivateRoot>
+              <Slots />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "stewards",
+          element: (
+            <PrivateRoot>
+              <Stewards />
+            </PrivateRoot>
+          ),
+        },
+      ],
+    },
+    
+    // --- Settings ---
+    {
+      path: "settings",
+      element: (
+        <PrivateRoot>
+          <PosSettings />
+        </PrivateRoot>
+      ),
+    },
+  ],
+},
+
 
       // --- Banquet ---
       {

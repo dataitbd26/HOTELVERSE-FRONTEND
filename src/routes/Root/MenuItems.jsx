@@ -318,11 +318,19 @@ const useMenuItems = () => {
     },
   ],
     },
+
+    
     // --- Point Of Sale (Unique Items Only) ---
     {
       title: "Point Of Sale",
       icon: <MdPointOfSale className="text-lg" />,
       list: [
+        {
+          title: "Dashboard",
+          path: "/pos/dashboard",
+          icon: <MdShoppingCart className="text-lg" />,
+        },
+        
         {
           title: "POS",
           path: "/pos/main",
@@ -338,7 +346,60 @@ const useMenuItems = () => {
           path: "/pos/kitchen-display",
           icon: <MdKitchen className="text-lg" />,
         },
-      ],
+         {
+          title: "Reports",
+          path: "/pos/Reports",
+          icon: <MdKitchen className="text-lg" />,
+        },
+        
+  {
+    title: "Setup",
+    icon: <MdSettingsSuggest className="text-lg" />,
+    list: [
+      {
+        title: "Outlets",
+        path: "/pos/setup/outlets",
+      },
+      {
+        title: "Tables",
+        path: "/pos/setup/tables",
+      },
+      {
+        title: "Item Category",
+        path: "/pos/setup/item-category",
+      },
+      {
+        title: "Rate Plan",
+        path: "/pos/setup/rate-plan",
+      },
+      {
+        title: "Department",
+        path: "/pos/setup/department",
+      },
+      {
+        title: "KOT Printing Setup",
+        path: "/pos/setup/kot-printing",
+      },
+      {
+        title: "Slots",
+        path: "/pos/setup/slots",
+      },
+      {
+        title: "Stewards",
+        path: "/pos/setup/stewards",
+      },
+    ],
+  },
+
+  {
+    title: "Settings",
+    path: "/pos/settings",
+    icon: <MdSettings className="text-lg" />,
+  }
+]
+
+
+      
     },
     // --- Banquet (Unique Items Only) ---
     {
