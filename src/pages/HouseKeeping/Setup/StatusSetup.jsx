@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useHouseKeepingStatus } from "../../../Hook/useHouseKeepingStatus";
 import SkeletonLoader from "../../../components/SkeletonLoader";
 import useAuth from "../../../Hook/useAuth";
+import { getPaginationRange } from "../../../utilities/paginationUtils";
 
 import { 
   FaEdit, FaTrash, FaPlus, FaTimes, FaBuilding, 
@@ -12,7 +13,6 @@ import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
 const HouseKeepingStatusManager = () => {
-  // Get the branch name directly from useAuth
   const { user } = useAuth();
   const branchName = user?.branch;
 
@@ -35,7 +35,6 @@ const HouseKeepingStatusManager = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // Branch is kept in state but won't be edited via input
   const [formData, setFormData] = useState({ name: "", colorCode: "#66cc00", isDirty: false, branch: "" });
 
   const loadStatuses = useCallback(async () => {
@@ -61,7 +60,7 @@ const HouseKeepingStatusManager = () => {
         name: status.name, 
         colorCode: status.colorCode, 
         isDirty: status.isDirty, 
-        branch: status.branch || branchName // Inherit branch here
+        branch: status.branch || branchName 
       });
     } else {
       setEditingId(null);
@@ -69,7 +68,7 @@ const HouseKeepingStatusManager = () => {
         name: "", 
         colorCode: "#66cc00", 
         isDirty: false, 
-        branch: branchName // Inherit branch here
+        branch: branchName 
       });
     }
     setIsModalOpen(true);
@@ -77,8 +76,6 @@ const HouseKeepingStatusManager = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // We check branchName from useAuth instead of an input field
     if (!branchName) {
       toast.error("User branch not found. Please log in again.");
       return;
@@ -86,9 +83,7 @@ const HouseKeepingStatusManager = () => {
 
     setIsSubmitting(true);
     try {
-      // Create the payload and ensure the branch is included
       const payload = { ...formData, branch: branchName };
-
       if (editingId) {
         await updateHouseKeepingStatus(editingId, payload);
         toast.success("Configuration updated");
@@ -128,7 +123,7 @@ const HouseKeepingStatusManager = () => {
   };
 
   return (
-    <div className="bg-[#f1f5f9] dark:bg-gray-900 min-h-screen p-4 md:p-6 text-[#1f2937] dark:text-gray-100 transition-colors duration-300">
+    <div className="bg-[#f1f5f9] dark:bg-gray-900 min-h-screen p-4 md:p-6 text-[#1f2937] dark:text-gray-100 transition-colors duration-300 relative overflow-hidden">
       
       {/* Header Area */}
       <div className="flex justify-between items-center mb-6">
@@ -172,9 +167,10 @@ const HouseKeepingStatusManager = () => {
                value={itemsPerPage}
                onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
              >
+               <option value={5}>5</option>
                <option value={10}>10</option>
+               <option value={15}>15</option>
                <option value={20}>20</option>
-               <option value={50}>50</option>
              </select>
           </div>
         </div>
@@ -228,23 +224,43 @@ const HouseKeepingStatusManager = () => {
           </table>
         </div>
 
-        {/* Pagination */}
+        {/* --- Updated Pagination --- */}
         <div className="px-6 py-4 bg-slate-50 dark:bg-gray-800 border-t border-slate-200 dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-4 text-gray-600 dark:text-gray-300">
           <div className="text-xs font-bold uppercase">
-            Showing <span className="text-[#66cc00]">{statuses.length}</span> Results
+            Showing <span className="text-[#66cc00]">{statuses.length}</span> of {totalItems} Results
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 join">
             <button 
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-              className="p-2 rounded border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-gray-600 disabled:opacity-30"
+              className="px-3 py-2 rounded-l border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-gray-600 disabled:opacity-30"
             >
               <FaChevronLeft size={10} />
             </button>
+
+            {/* UPDATED CALL: Passing currentPage and totalPages to the imported helper */}
+            {getPaginationRange(currentPage, totalPages).map((pageNum, index) => (
+              pageNum === '...' ? (
+                <span key={`dots-${index}`} className="px-2 text-slate-400">...</span>
+              ) : (
+                <button
+                  key={pageNum}
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`px-3 py-1.5 border border-slate-300 dark:border-gray-600 text-xs font-bold transition-colors ${
+                    currentPage === pageNum
+                      ? "bg-[#66cc00] text-white border-[#66cc00]"
+                      : "bg-white dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-gray-600"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              )
+            ))}
+
             <button 
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-              className="p-2 rounded border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-gray-600 disabled:opacity-30"
+              className="px-3 py-2 rounded-r border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-gray-600 disabled:opacity-30"
             >
               <FaChevronRight size={10} />
             </button>
@@ -252,54 +268,77 @@ const HouseKeepingStatusManager = () => {
         </div>
       </div>
 
-      {/* Drawer Modal */}
+      {/* --- DRAWER MODAL --- */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[1000] flex justify-end transition-opacity">
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
-          <div className="relative w-full max-w-md bg-white dark:bg-gray-800 shadow-2xl h-full flex flex-col animate-in slide-in-from-right duration-300 text-gray-800 dark:text-gray-100">
-            <div className="p-6 border-b border-slate-100 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-800">
-              <div>
-                <h3 className="text-xl font-bold">{editingId ? "Update Status" : "Create Status"}</h3>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Enter details below</p>
-              </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors p-2"><FaTimes size={18} /></button>
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm transition-opacity">
+          <div className="w-full max-w-md bg-white dark:bg-gray-800 h-full shadow-2xl animate-slide-in-right p-6 overflow-y-auto">
+            <div className="flex justify-between items-center mb-8 border-b border-slate-100 dark:border-gray-700 pb-4">
+              <h3 className="text-xl font-bold flex items-center gap-2">
+                {editingId ? "Edit Configuration" : "New Status Setup"}
+              </h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors">
+                <FaTimes size={20} />
+              </button>
             </div>
-            
-            <form onSubmit={handleSubmit} className="p-6 space-y-6 flex-1 bg-[#fcfcfd] dark:bg-gray-900/50">
-              {/* STATUS NAME FIELD */}
-              <div className="space-y-1">
-                <label className="text-xs font-black text-[#3d4451] dark:text-gray-400 uppercase">Name</label>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Status Name</label>
                 <input 
                   required
-                  className="w-full border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-4 py-2.5 text-sm focus:border-[#66cc00] outline-none transition-all shadow-sm" 
+                  type="text"
+                  className="w-full border border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#66cc00]/20 focus:border-[#66cc00] transition-all"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g., Cleaning in Progress"
                 />
               </div>
 
-              {/* BRANCH FIELD REMOVED FROM UI BUT KEPT IN LOGIC */}
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-black text-gray-400 uppercase">Color Map</label>
-                  <div className="flex items-center gap-2 p-1.5 border border-slate-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 shadow-sm">
-                    <input type="color" className="w-10 h-10 rounded-md border-none cursor-pointer p-0 bg-transparent" value={formData.colorCode} onChange={(e) => setFormData({...formData, colorCode: e.target.value})} />
-                    <input type="text" className="text-xs font-mono w-full font-bold uppercase outline-none bg-transparent" value={formData.colorCode} readOnly />
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-black text-gray-400 uppercase">Logic Type</label>
-                  <label className="flex items-center justify-between p-3.5 bg-white dark:bg-gray-700 rounded-lg border border-slate-300 dark:border-gray-600 cursor-pointer shadow-sm hover:border-[#66cc00] transition-all">
-                    <span className="text-xs font-bold uppercase">Is Dirty?</span>
-                    <input type="checkbox" className="checkbox checkbox-sm accent-[#66cc00]" checked={formData.isDirty} onChange={(e) => setFormData({...formData, isDirty: e.target.checked})} />
-                  </label>
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Identify Color</label>
+                <div className="flex gap-4 items-center bg-slate-50 dark:bg-gray-700 p-3 rounded border border-slate-200 dark:border-gray-600">
+                  <input 
+                    type="color"
+                    className="w-12 h-12 rounded cursor-pointer border-none bg-transparent"
+                    value={formData.colorCode}
+                    onChange={(e) => setFormData({ ...formData, colorCode: e.target.value })}
+                  />
+                  <input 
+                    type="text"
+                    className="bg-transparent font-mono text-sm uppercase outline-none flex-1"
+                    value={formData.colorCode}
+                    onChange={(e) => setFormData({ ...formData, colorCode: e.target.value })}
+                  />
                 </div>
               </div>
 
-              <div className="pt-8 flex gap-3 mt-auto">
-                <button type="button" className="flex-1 py-3 text-xs font-black uppercase text-gray-500 dark:text-gray-400 border-2 border-slate-100 dark:border-gray-700 rounded-xl hover:bg-slate-50 dark:hover:bg-gray-800 transition-all" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                <button type="submit" disabled={isSubmitting} className="flex-1 py-3 text-xs font-black uppercase text-white bg-[#66cc00] rounded-xl hover:bg-[#336600] shadow-lg transition-all">
-                  {isSubmitting ? "Syncing..." : "Commit Status"}
+              <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-gray-700 rounded-lg border border-slate-200 dark:border-gray-600">
+                <div>
+                  <label className="font-bold text-sm block">Dirty Status Mark</label>
+                  <p className="text-[10px] text-slate-400">Toggle if this status implies a dirty room</p>
+                </div>
+                <input 
+                  type="checkbox" 
+                  className="toggle toggle-success"
+                  checked={formData.isDirty}
+                  onChange={(e) => setFormData({ ...formData, isDirty: e.target.checked })}
+                />
+              </div>
+
+              <div className="pt-6 flex gap-3">
+                <button 
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 px-6 py-3 border border-slate-200 dark:border-gray-600 rounded font-bold text-sm hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex-1 bg-[#66cc00] hover:bg-[#336600] text-white px-6 py-3 rounded font-bold text-sm shadow-lg disabled:opacity-50 transition-all"
+                >
+                  {isSubmitting ? "Processing..." : editingId ? "Update Record" : "Save Changes"}
                 </button>
               </div>
             </form>
