@@ -1,33 +1,33 @@
 import { useState, useCallback } from 'react';
-import UseAxiosSecure from './UseAxioSecure';
+import UseAxiosSecure from './UseAxioSecure'; 
 
-export const useHouseKeeper = () => {
+export const useRemarkHouseKeeping = () => {
   const axiosSecure = UseAxiosSecure();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // --- GET ALL (Includes Pagination, Search, & Branch Filter) ---
-  const getAllHouseKeepers = useCallback(async (params) => {
+  // --- GET ALL ---
+  const getAllRemarks = useCallback(async (params) => {
     setLoading(true);
-    setError(null); // Clear previous errors
+    setError(null);
     try {
-      const { data } = await axiosSecure.get('/housekeeper', { params });
+      const { data } = await axiosSecure.get('/remark-housekeeping', { params });
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
       setError(errorMessage);
-      throw err; // Propagate error so component can handle it
+      throw err;
     } finally {
       setLoading(false);
     }
   }, [axiosSecure]);
 
   // --- GET BY ID ---
-  const getHouseKeeperById = useCallback(async (id) => {
+  const getRemarkById = useCallback(async (id) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await axiosSecure.get(`/housekeeper/get-id/${id}`);
+      const { data } = await axiosSecure.get(`/remark-housekeeping/get-id/${id}`);
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
@@ -39,11 +39,11 @@ export const useHouseKeeper = () => {
   }, [axiosSecure]);
 
   // --- CREATE ---
-  const createHouseKeeper = async (keeperData) => {
+  const createRemark = async (remarkData) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await axiosSecure.post('/housekeeper/post', keeperData);
+      const { data } = await axiosSecure.post('/remark-housekeeping/post', remarkData);
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
@@ -55,11 +55,11 @@ export const useHouseKeeper = () => {
   };
 
   // --- UPDATE ---
-  const updateHouseKeeper = async (id, updateData) => {
+  const updateRemark = async (id, updateData) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await axiosSecure.put(`/housekeeper/update/${id}`, updateData);
+      const { data } = await axiosSecure.put(`/remark-housekeeping/update/${id}`, updateData);
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
@@ -71,11 +71,11 @@ export const useHouseKeeper = () => {
   };
 
   // --- DELETE ---
-  const removeHouseKeeper = async (id) => {
+  const removeRemark = async (id) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await axiosSecure.delete(`/housekeeper/delete/${id}`);
+      const { data } = await axiosSecure.delete(`/remark-housekeeping/delete/${id}`);
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
@@ -89,10 +89,10 @@ export const useHouseKeeper = () => {
   return {
     loading,
     error,
-    getAllHouseKeepers,
-    getHouseKeeperById,
-    createHouseKeeper,
-    updateHouseKeeper,
-    removeHouseKeeper,
+    getAllRemarks,
+    getRemarkById,
+    createRemark,
+    updateRemark,
+    removeRemark,
   };
 };
