@@ -201,12 +201,12 @@ const useMenuItems = () => {
       icon: <MdSettingsSuggest className="text-lg" />, 
       list: [
         {
-          title: "Rooms & Category",
-          path: "/front-office/setup/rooms-category",
+          title: "Rooms",
+          path: "/front-office/setup/rooms",
         },
         {
-          title: "Room Rate",
-          path: "/front-office/setup/room-rate",
+          title: "Room category",
+          path: "/front-office/setup/room-category",
         },
         {
           title: "Charge",

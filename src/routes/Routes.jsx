@@ -87,8 +87,8 @@ import CheckedOutRooms from "../pages/Frontoffice/views/CheckedOutRooms";
 import GroupReservations from "../pages/Frontoffice/views/GroupReservations";
 import RatePlan from "../pages/Frontoffice/IncidentalInvoice/RatePlan";
 import IncidentalInvoice from "../pages/Frontoffice/IncidentalInvoice/IncidentalInvoice";
-import RoomsCategory from "../pages/Frontoffice/Setup/RoomsCategory";
-import RoomRate from "../pages/Frontoffice/Setup/RoomRate";
+import RoomsCategory from "../pages/Frontoffice/Setup/Room";
+import RoomRate from "../pages/Frontoffice/Setup/RoomCategory";
 import Charge from "../pages/Frontoffice/Setup/Charge";
 import CorporateClient from "../pages/Frontoffice/Setup/CorporateClient";
 import TravelAgent from "../pages/Frontoffice/Setup/TravelAgent";
@@ -266,8 +266,8 @@ export const router = createBrowserRouter([
 {
   path: "setup",
   children: [
-    { path: "rooms-category", element: <PrivateRoot><RoomsCategory /></PrivateRoot> },
-    { path: "room-rate", element: <PrivateRoot><RoomRate /></PrivateRoot> },
+    { path: "rooms", element: <PrivateRoot><RoomsCategory /></PrivateRoot> },
+    { path: "room-category", element: <PrivateRoot><RoomRate /></PrivateRoot> },
     { path: "charge", element: <PrivateRoot><Charge /></PrivateRoot> },
     { path: "corporate-client", element: <PrivateRoot><CorporateClient /></PrivateRoot> },
     { path: "travel-agent", element: <PrivateRoot><TravelAgent /></PrivateRoot> },
