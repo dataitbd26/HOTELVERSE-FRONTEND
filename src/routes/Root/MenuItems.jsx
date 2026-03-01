@@ -52,6 +52,21 @@ const useMenuItems = () => {
       path: "/dashboard",
       icon: <MdDashboard className="text-lg" />,
     },
+
+    {
+      title : "Guest Management",
+      icon : <MdPeople className="text-lg" />,
+      list : [{
+        title : "Guest Profile",
+        path : "/guest-management/guest-profile",
+        icon : <MdPeople className="text-lg" />
+      },{
+        title : "Organization",
+        path : "/guest-management/organization",
+        icon : <MdBusiness className="text-lg" />
+
+      }]
+    },
     // --- Front Office (Unique Items Only) ---
    {
   title: "Front Office",
@@ -77,11 +92,7 @@ const useMenuItems = () => {
       path: "/front-office/self-services",
       icon: <MdAssignment className="text-lg" />,
     },
-    {
-      title: "Guest Profiles",
-      path: "/front-office/profiles",
-      icon: <MdPeople className="text-lg" />,
-    },
+
     {
       title: "Reservation List",
       path: "/front-office/reservation-list",

@@ -1,12 +1,11 @@
 import { useState, useCallback } from 'react';
-import UseAxiosSecure from "../Hook/UseAxioSecure"; // Adjust path if needed based on your folder structure
+import UseAxiosSecure from './UseAxioSecure';
 
 export const useRoom = () => {
   const axiosSecure = UseAxiosSecure();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // --- GET ALL ROOMS (With Pagination & Search) ---
   const getAllRooms = useCallback(async (params) => {
     setLoading(true);
     setError(null);
@@ -22,7 +21,6 @@ export const useRoom = () => {
     }
   }, [axiosSecure]);
 
-  // --- GET ROOM BY ID ---
   const getRoomById = useCallback(async (id) => {
     setLoading(true);
     setError(null);
@@ -38,7 +36,6 @@ export const useRoom = () => {
     }
   }, [axiosSecure]);
 
-  // --- CREATE ROOM ---
   const createRoom = async (payload) => {
     setLoading(true);
     setError(null);
@@ -54,7 +51,6 @@ export const useRoom = () => {
     }
   };
 
-  // --- UPDATE ROOM ---
   const updateRoom = async (id, payload) => {
     setLoading(true);
     setError(null);
@@ -70,7 +66,6 @@ export const useRoom = () => {
     }
   };
 
-  // --- DELETE ROOM ---
   const removeRoom = async (id) => {
     setLoading(true);
     setError(null);
@@ -86,6 +81,18 @@ export const useRoom = () => {
     }
   };
 
+  const getRoomCategories = useCallback(async (branch) => {
+    try {
+      const { data } = await axiosSecure.get('/roomcategory', { 
+        params: { branch, limit: 1000 } 
+      });
+      return data;
+    } catch (err) {
+      console.error("Failed to fetch room categories", err);
+      return { data: [] }; 
+    }
+  }, [axiosSecure]);
+
   return {
     loading,
     error,
@@ -94,5 +101,6 @@ export const useRoom = () => {
     createRoom,
     updateRoom,
     removeRoom,
+    getRoomCategories
   };
 };

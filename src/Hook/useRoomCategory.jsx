@@ -1,12 +1,11 @@
 import { useState, useCallback } from 'react';
-import UseAxiosSecure from '../Hook/UseAxioSecure'; // Adjust path based on your folder structure
+import UseAxiosSecure from '../Hook/UseAxioSecure';
 
 export const useRoomCategory = () => {
   const axiosSecure = UseAxiosSecure();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // --- GET ALL ROOM CATEGORIES (With Pagination & Search) ---
   const getAllRoomCategories = useCallback(async (params) => {
     setLoading(true);
     setError(null);
@@ -22,7 +21,6 @@ export const useRoomCategory = () => {
     }
   }, [axiosSecure]);
 
-  // --- GET ROOM CATEGORY BY ID ---
   const getRoomCategoryById = useCallback(async (id) => {
     setLoading(true);
     setError(null);
@@ -38,7 +36,6 @@ export const useRoomCategory = () => {
     }
   }, [axiosSecure]);
 
-  // --- CREATE ROOM CATEGORY ---
   const createRoomCategory = async (payload) => {
     setLoading(true);
     setError(null);
@@ -54,7 +51,6 @@ export const useRoomCategory = () => {
     }
   };
 
-  // --- UPDATE ROOM CATEGORY ---
   const updateRoomCategory = async (id, payload) => {
     setLoading(true);
     setError(null);
@@ -70,7 +66,6 @@ export const useRoomCategory = () => {
     }
   };
 
-  // --- DELETE ROOM CATEGORY ---
   const removeRoomCategory = async (id) => {
     setLoading(true);
     setError(null);

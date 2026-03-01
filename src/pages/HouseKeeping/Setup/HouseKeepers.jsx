@@ -167,7 +167,7 @@ const HouseKeepersManager = () => {
       text: "This action cannot be undone. It will remove the staff member from all records.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#dc2626", // Red for destructive actions
+      confirmButtonColor: "#dc2626",
       cancelButtonColor: "#3d4451",
       confirmButtonText: "Yes, delete",
       background: isDarkMode ? '#1f2937' : '#fff',
@@ -248,7 +248,7 @@ const HouseKeepersManager = () => {
           </div>
         </div>
 
-        {/* Table Area (Matched to HouseKeepingStatus UI) */}
+        {/* Table Area */}
         <div className="overflow-x-auto p-5 min-h-[400px]">
           <table className="w-full text-sm border-collapse">
             <thead>
@@ -312,7 +312,7 @@ const HouseKeepersManager = () => {
           </table>
         </div>
 
-        {/* Pagination (Original Template Style) */}
+        {/* Pagination */}
         {totalItems > 0 && (
           <div className="px-6 py-4 bg-slate-50 dark:bg-gray-800 border-t border-slate-200 dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-4 text-gray-600 dark:text-gray-300">
             <div className="text-xs font-bold uppercase">
@@ -360,7 +360,7 @@ const HouseKeepersManager = () => {
         )}
       </div>
 
-      {/* Drawer Modal (Original Template Style) */}
+      {/* Drawer Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm transition-opacity" role="dialog" aria-modal="true">
           <div className="w-full max-w-md bg-white dark:bg-gray-800 h-full shadow-2xl animate-slide-in-right p-6 overflow-y-auto flex flex-col">
@@ -445,7 +445,7 @@ const HouseKeepersManager = () => {
                   )}
                 </div>
 
-              </div>
+              </div> {/* Make sure this encapsulates all input fields */}
 
               {/* Submit Buttons */}
               <div className="pt-6 mt-auto flex gap-3 border-t border-slate-100 dark:border-gray-700">

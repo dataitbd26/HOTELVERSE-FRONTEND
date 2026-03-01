@@ -1,0 +1,9 @@
+[
+  { "value": "Standard", "label": "Standard" },
+  { "value": "Deluxe", "label": "Deluxe" },
+  { "value": "Super Deluxe", "label": "Super Deluxe" },
+  { "value": "Executive Suite", "label": "Executive Suite" },
+  { "value": "Presidential Suite", "label": "Presidential Suite" },
+  { "value": "Family Room", "label": "Family Room" },
+  { "value": "Studio", "label": "Studio" }
+]
