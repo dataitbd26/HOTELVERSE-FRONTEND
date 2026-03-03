@@ -107,6 +107,12 @@ import Stewards from "../pages/PointOfSale/Setup/Stewards";
 import Slots from "../pages/PointOfSale/Setup/Slots";
 import GuestProfile from "../pages/Guest/guestProfile/page";
 import Organization from "../pages/Guest/organization/page";
+import BanquetUnits from "../pages/Banquet/Setup/BanquetUnit";
+import BanquetSalesItem from "../pages/Banquet/Setup/BanquetSalesItem";
+import FnbItems from "../pages/Banquet/Setup/FandBItem";
+import PresetMenu from "../pages/Banquet/Setup/PresetMenu";
+import EventTypes from "../pages/Banquet/Setup/EventType";
+import ModeOfPayment from "../pages/Banquet/Setup/ModeOfPrement";
 
 
 
@@ -561,18 +567,88 @@ export const router = createBrowserRouter([
 
 
       // --- Banquet ---
-      {
-        path: "banquet/new-booking",
-        element: <PrivateRoot><NewBooking /></PrivateRoot>,
-      },
-      {
-        path: "banquet/booking-list",
-        element: <PrivateRoot><BookingList /></PrivateRoot>,
-      },
-      {
-        path: "banquet/calendar",
-        element: <PrivateRoot><CalendarView /></PrivateRoot>,
-      },
+  {
+  path: "banquet",
+  children: [
+    {
+      path: "new-booking",
+      element: (
+        <PrivateRoot>
+          <NewBooking />
+        </PrivateRoot>
+      ),
+    },
+    {
+      path: "booking-list",
+      element: (
+        <PrivateRoot>
+          <BookingList />
+        </PrivateRoot>
+      ),
+    },
+    {
+      path: "calendar",
+      element: (
+        <PrivateRoot>
+          <CalendarView />
+        </PrivateRoot>
+      ),
+    },
+    {
+      path: "setup",
+      children: [
+        {
+          path: "units",
+          element: (
+            <PrivateRoot>
+              <BanquetUnits />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "sales-item",
+          element: (
+            <PrivateRoot>
+              <BanquetSalesItem />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "fnb-items",
+          element: (
+            <PrivateRoot>
+              <FnbItems />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "preset-menu",
+          element: (
+            <PrivateRoot>
+              <PresetMenu />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "event-types",
+          element: (
+            <PrivateRoot>
+              <EventTypes />
+            </PrivateRoot>
+          ),
+        },
+        {
+          path: "mode-of-payment",
+          element: (
+            <PrivateRoot>
+              <ModeOfPayment />
+            </PrivateRoot>
+          ),
+        },
+      ],
+    },
+  ],
+},
 
       // --- Stores ---
       {
