@@ -1,6 +1,7 @@
+// BanquetSalesItemManager.jsx
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet";
-import { useUnit } from "../../../Hook/useUnit"; 
+import { useBanquetSalesItem } from "../../../Hook/useBanquetSalesItem"; 
 import SkeletonLoader from "../../../components/SkeletonLoader";
 import useAuth from "../../../Hook/useAuth";
 import { getPaginationRange } from "../../../utilities/paginationUtils";
@@ -8,7 +9,7 @@ import PageHeader from "../../../components/PageHeader";
 
 import { 
   FaEdit, FaTrash, FaPlus, FaTimes, 
-  FaChevronLeft, FaChevronRight, FaLayerGroup, FaTags,
+  FaChevronLeft, FaChevronRight, FaShoppingCart, FaTags,
   FaCheck, FaBan
 } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -16,28 +17,22 @@ import Swal from "sweetalert2";
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 15, 20, 50];
 
-const UnitManager = () => {
+const defaultFormState = { name: "", isActive: true };
+
+const BanquetSalesItemManager = () => {
   const { user } = useAuth();
   const userBranch = user?.branch || "";
 
-  // 🔴 DIAGNOSTIC LOG 1: Check if the user object has the branch
-  useEffect(() => {
-    console.log("🕵️ User Object from Auth:", user);
-    console.log("🕵️ Extracted Branch:", userBranch);
-    if (!userBranch) {
-      console.warn("⚠️ WARNING: userBranch is missing! Data will NOT fetch and saves will be blocked.");
-    }
-  }, [user, userBranch]);
-
   const { 
-    getAllUnits, 
-    createUnit, 
-    updateUnit, 
-    removeUnit, 
+    getAllBanquetSalesItems, 
+    createBanquetSalesItem, 
+    updateBanquetSalesItem, 
+    removeBanquetSalesItem, 
     loading 
-  } = useUnit();
+  } = useBanquetSalesItem();
 
-  const [unitsList, setUnitsList] = useState([]);
+  // State Management
+  const [itemList, setItemList] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -45,12 +40,14 @@ const UnitManager = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   
+  // Inline Form State
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-  const [formData, setFormData] = useState({ name: "" });
+  const [formData, setFormData] = useState(defaultFormState);
 
+  // --- Search Debounce Logic ---
   useEffect(() => {
     const handler = setTimeout(() => {
       if (debouncedSearch !== searchInput) {
@@ -61,11 +58,12 @@ const UnitManager = () => {
     return () => clearTimeout(handler);
   }, [searchInput, debouncedSearch]);
 
-  const loadUnits = useCallback(async () => {
+  // --- Data Fetching ---
+  const loadItems = useCallback(async () => {
     if (!userBranch) return; 
 
     try {
-      const data = await getAllUnits({ 
+      const data = await getAllBanquetSalesItems({ 
         page: currentPage, 
         limit: itemsPerPage, 
         search: debouncedSearch,
@@ -73,27 +71,28 @@ const UnitManager = () => {
       });
       
       if (data) {
-        setUnitsList(data.data || []);
+        setItemList(data.data || []);
         setTotalPages(data.pagination?.totalPages || 1);
         setTotalItems(data.pagination?.totalDocuments || 0);
       }
     } catch (error) {
-      toast.error("Failed to load units");
+      toast.error(error?.response?.data?.error || "Failed to load sales items");
     }
-  }, [getAllUnits, currentPage, itemsPerPage, debouncedSearch, userBranch]);
+  }, [getAllBanquetSalesItems, currentPage, itemsPerPage, debouncedSearch, userBranch]);
 
   useEffect(() => { 
-    loadUnits(); 
-  }, [loadUnits]);
+    loadItems(); 
+  }, [loadItems]);
 
-  const handleOpenForm = useCallback((unit = null) => {
+  // --- Handlers ---
+  const handleOpenForm = useCallback((item = null) => {
     setErrors({}); 
-    if (unit) {
-      setEditingId(unit._id);
-      setFormData({ name: unit.name });
+    if (item) {
+      setEditingId(item._id);
+      setFormData({ name: item.name, isActive: item.isActive });
     } else {
       setEditingId(null);
-      setFormData({ name: "" });
+      setFormData(defaultFormState);
     }
     setIsFormOpen(true);
   }, []);
@@ -101,13 +100,22 @@ const UnitManager = () => {
   const handleCloseForm = useCallback(() => {
     setIsFormOpen(false);
     setEditingId(null);
-    setFormData({ name: "" });
+    setFormData(defaultFormState);
     setErrors({});
   }, []);
 
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? checked : value 
+    }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: null }));
+  };
+
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Unit Name is required.";
+    if (!formData.name?.trim()) newErrors.name = "Item Name is required.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -120,22 +128,21 @@ const UnitManager = () => {
     try {
       const payload = { 
         name: formData.name.trim(), 
+        isActive: formData.isActive,
         branch: userBranch 
       };
       
       if (editingId) {
-        await updateUnit(editingId, payload);
-        toast.success("Unit updated successfully");
+        await updateBanquetSalesItem(editingId, payload);
+        toast.success("Item updated successfully");
       } else {
-        await createUnit(payload);
-        toast.success("Unit created successfully");
+        await createBanquetSalesItem(payload);
+        toast.success("Item created successfully");
       }
       
       handleCloseForm();
-      loadUnits();
+      loadItems();
     } catch (err) {
-      // 🔴 DIAGNOSTIC LOG 2: Catching backend rejection
-      console.error("Save Error Details:", err);
       toast.error(err.response?.data?.error || err.response?.data?.message || "Execution failed. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -159,18 +166,18 @@ const UnitManager = () => {
 
     if (result.isConfirmed) {
       try {
-        await removeUnit(id);
+        await removeBanquetSalesItem(id);
         toast.success("Deleted successfully");
-        if (unitsList.length === 1 && currentPage > 1) {
+        if (itemList.length === 1 && currentPage > 1) {
           setCurrentPage(prev => prev - 1);
         } else {
-          loadUnits();
+          loadItems();
         }
       } catch (err) { 
         toast.error(err.response?.data?.error || err.response?.data?.message || "Delete failed"); 
       }
     }
-  }, [removeUnit, loadUnits, unitsList.length, currentPage]);
+  }, [removeBanquetSalesItem, loadItems, itemList.length, currentPage]);
 
   const paginationRange = useMemo(() => 
     getPaginationRange(currentPage, totalPages), 
@@ -180,15 +187,16 @@ const UnitManager = () => {
     <div className="bg-[#f1f5f9] dark:bg-gray-900 min-h-screen p-4 md:p-6 text-[#1f2937] dark:text-gray-100 transition-colors duration-300 relative overflow-hidden font-sans">
       
       <Helmet>
-        <title>Units Management | Admin Dashboard</title>
+        <title>Banquet Sales Items | Admin Dashboard</title>
+        <meta name="description" content="Manage banquet sales items." />
       </Helmet>
 
       {/* Header Area */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <PageHeader 
-          title="Measurement Units" 
-          subtitle="Manage operational units" 
-          icon={<FaLayerGroup className="text-[#66cc00]" />} 
+          title="Banquet Sales Items" 
+          subtitle="Manage items for banquet sales" 
+          icon={<FaShoppingCart className="text-[#66cc00]" />} 
         />
       </div>
 
@@ -206,12 +214,12 @@ const UnitManager = () => {
 
           <div className="flex items-center gap-4 flex-wrap sm:flex-nowrap w-full sm:w-auto">
             <div className="flex items-center gap-2 w-full sm:w-auto">
-              <label htmlFor="searchUnit" className="text-sm font-bold hidden sm:block">Search:</label>
+              <label htmlFor="searchItem" className="text-sm font-bold hidden sm:block">Search:</label>
               <input 
-                id="searchUnit"
+                id="searchItem"
                 type="search"
                 className="border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded px-3 py-1.5 text-sm w-full sm:w-64 focus:ring-1 focus:ring-[#66cc00] outline-none transition-all"
-                placeholder="Filter by unit name..."
+                placeholder="Filter by name..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
@@ -237,10 +245,11 @@ const UnitManager = () => {
         <div className="overflow-x-auto p-5 min-h-[400px]">
           <table className="w-full text-sm border-collapse">
             <thead>
+              {/* Green Header */}
               <tr className="bg-[#66cc00] text-white font-medium border border-[#66cc00]">
-                <th scope="col" className="px-4 py-2.5 text-left text-sm" colSpan="2">
-                  Unit Details
-                </th>
+                <th scope="col" className="px-4 py-2.5 text-left text-sm">Name</th>
+                <th scope="col" className="px-4 py-2.5 text-center text-sm w-32">Active</th>
+                <th scope="col" className="px-4 py-2.5 text-right text-sm w-56">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-gray-700 border-x border-b border-slate-200 dark:border-gray-700">
@@ -248,20 +257,27 @@ const UnitManager = () => {
               {/* 🟢 INLINE EDIT/ADD FORM ROW */}
               {isFormOpen && (
                 <tr className="bg-slate-50 dark:bg-gray-700/30">
-                  <td className="px-4 py-3 align-middle">
+                  <td className="px-4 py-3 align-middle relative">
                     <input
                       type="text"
-                      placeholder="Enter unit name (e.g., Kg, Litre, Box)..."
-                      className={`w-full max-w-lg border ${errors.name ? 'border-red-500' : 'border-slate-300 dark:border-gray-600'} bg-white dark:bg-gray-800 rounded px-3 py-1.5 outline-none focus:ring-1 focus:ring-[#66cc00] transition-all`}
+                      name="name"
+                      placeholder="Enter item name..."
+                      className={`w-full max-w-sm border ${errors.name ? 'border-red-500' : 'border-slate-300 dark:border-gray-600'} bg-white dark:bg-gray-800 rounded px-3 py-1.5 outline-none focus:ring-1 focus:ring-[#66cc00] transition-all`}
                       value={formData.name}
                       autoFocus
-                      onChange={(e) => {
-                        setFormData({ name: e.target.value });
-                        if (errors.name) setErrors({});
-                      }}
+                      onChange={handleInputChange}
                       onKeyDown={(e) => e.key === 'Enter' && handleSave()}
                     />
-                    {errors.name && <p className="text-red-500 text-xs mt-1 absolute">{errors.name}</p>}
+                    {errors.name && <p className="text-red-500 text-[11px] mt-1 absolute">{errors.name}</p>}
+                  </td>
+                  <td className="px-4 py-3 align-middle text-center">
+                    <input 
+                      type="checkbox" 
+                      name="isActive"
+                      checked={formData.isActive}
+                      onChange={handleInputChange}
+                      className="w-4 h-4 cursor-pointer text-[#66cc00] focus:ring-[#66cc00] rounded"
+                    />
                   </td>
                   <td className="px-4 py-3 text-right align-middle w-56">
                     <div className="flex items-center justify-end gap-2">
@@ -287,33 +303,40 @@ const UnitManager = () => {
 
               {/* Data Rows */}
               {loading ? (
-                <tr><td colSpan="2" className="py-20 text-center"><SkeletonLoader /></td></tr>
-              ) : unitsList.length === 0 && !isFormOpen ? (
+                <tr><td colSpan="3" className="py-20 text-center"><SkeletonLoader /></td></tr>
+              ) : itemList.length === 0 && !isFormOpen ? (
                 <tr>
-                  <td colSpan="2" className="py-24 text-center">
+                  <td colSpan="3" className="py-24 text-center">
                     <div className="flex flex-col items-center justify-center text-slate-400">
                       <FaTags size={48} className="mb-4 opacity-50" />
-                      <p className="text-lg font-medium">No units found</p>
+                      <p className="text-lg font-medium">No items found</p>
                       <p className="text-sm mt-1">Click 'Add New Record' to create one.</p>
                     </div>
                   </td>
                 </tr>
               ) : (
-                unitsList.map((unit) => (
-                  <tr key={unit._id} className="hover:bg-slate-50 dark:hover:bg-gray-700/20 transition-colors">
-                    <td className="px-4 py-3 align-middle text-slate-700 dark:text-gray-200">
-                      {unit.name}
+                itemList.map((item) => (
+                  <tr key={item._id} className="hover:bg-slate-50 dark:hover:bg-gray-700/20 transition-colors">
+                    <td className="px-4 py-3 align-middle text-slate-700 dark:text-gray-200 font-medium">
+                      {item.name}
+                    </td>
+                    <td className="px-4 py-3 align-middle text-center">
+                      {item.isActive ? (
+                        <span className="text-[#66cc00] font-bold text-lg">✓</span>
+                      ) : (
+                        <span className="text-red-500 font-bold text-lg">✗</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-right align-middle">
                       <div className="flex items-center justify-end gap-2">
                         <button 
-                          onClick={() => handleOpenForm(unit)} 
+                          onClick={() => handleOpenForm(item)} 
                           className="flex items-center gap-1.5 px-3 py-1 border border-slate-300 dark:border-gray-600 bg-slate-100 hover:bg-slate-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-slate-700 dark:text-gray-200 rounded text-sm transition-colors"
                         >
                           <FaEdit size={12} className="text-slate-500 dark:text-slate-400" /> Edit
                         </button>
                         <button 
-                          onClick={() => handleDelete(unit._id)} 
+                          onClick={() => handleDelete(item._id)} 
                           className="flex items-center gap-1.5 px-3 py-1 border border-slate-300 dark:border-gray-600 bg-slate-100 hover:bg-red-100 dark:bg-gray-700 dark:hover:bg-red-900/40 text-slate-700 hover:text-red-600 dark:text-gray-200 rounded text-sm transition-colors"
                         >
                           <FaTimes size={12} className="text-slate-500 dark:text-slate-400" /> Delete
@@ -331,7 +354,7 @@ const UnitManager = () => {
         {totalItems > 0 && (
           <div className="px-6 py-4 bg-slate-50 dark:bg-gray-800 border-t border-slate-200 dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-4 text-gray-600 dark:text-gray-300">
             <div className="text-xs font-bold uppercase">
-              Showing <span className="text-[#66cc00]">{unitsList.length}</span> of {totalItems} Results
+              Showing <span className="text-[#66cc00]">{itemList.length}</span> of {totalItems} Results
             </div>
             <div className="flex items-center gap-1 join" aria-label="Pagination">
               <button 
@@ -375,4 +398,4 @@ const UnitManager = () => {
   );
 };
 
-export default UnitManager;
+export default BanquetSalesItemManager;

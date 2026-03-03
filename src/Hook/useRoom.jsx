@@ -1,33 +1,16 @@
 import { useState, useCallback } from 'react';
 import UseAxiosSecure from './UseAxioSecure';
 
-export const useHouseKeeper = () => {
+export const useRoom = () => {
   const axiosSecure = UseAxiosSecure();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // --- GET ALL (Includes Pagination, Search, & Branch Filter) ---
-  const getAllHouseKeepers = useCallback(async (params) => {
+  const getAllRooms = useCallback(async (params) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await axiosSecure.get('/housekeeper', { params });
-      return data;
-    } catch (err) {
-      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
-      setError(errorMessage);
-      throw err; 
-    } finally {
-      setLoading(false);
-    }
-  }, [axiosSecure]);
-
-  // --- GET BY ID ---
-  const getHouseKeeperById = useCallback(async (id) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const { data } = await axiosSecure.get(`/housekeeper/get-id/${id}`);
+      const { data } = await axiosSecure.get('/room', { params });
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
@@ -38,12 +21,26 @@ export const useHouseKeeper = () => {
     }
   }, [axiosSecure]);
 
-  // --- CREATE ---
-  const createHouseKeeper = async (keeperData) => {
+  const getRoomById = useCallback(async (id) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await axiosSecure.post('/housekeeper/post', keeperData);
+      const { data } = await axiosSecure.get(`/room/get-id/${id}`);
+      return data;
+    } catch (err) {
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [axiosSecure]);
+
+  const createRoom = async (payload) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await axiosSecure.post('/room/post', payload);
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
@@ -54,12 +51,11 @@ export const useHouseKeeper = () => {
     }
   };
 
-  // --- UPDATE ---
-  const updateHouseKeeper = async (id, updateData) => {
+  const updateRoom = async (id, payload) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await axiosSecure.put(`/housekeeper/update/${id}`, updateData);
+      const { data } = await axiosSecure.put(`/room/update/${id}`, payload);
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
@@ -70,12 +66,11 @@ export const useHouseKeeper = () => {
     }
   };
 
-  // --- DELETE ---
-  const removeHouseKeeper = async (id) => {
+  const removeRoom = async (id) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await axiosSecure.delete(`/housekeeper/delete/${id}`);
+      const { data } = await axiosSecure.delete(`/room/delete/${id}`);
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
@@ -85,14 +80,27 @@ export const useHouseKeeper = () => {
       setLoading(false);
     }
   };
+
+  const getRoomCategories = useCallback(async (branch) => {
+    try {
+      const { data } = await axiosSecure.get('/roomcategory', { 
+        params: { branch, limit: 1000 } 
+      });
+      return data;
+    } catch (err) {
+      console.error("Failed to fetch room categories", err);
+      return { data: [] }; 
+    }
+  }, [axiosSecure]);
 
   return {
     loading,
     error,
-    getAllHouseKeepers,
-    getHouseKeeperById,
-    createHouseKeeper,
-    updateHouseKeeper,
-    removeHouseKeeper,
+    getAllRooms,
+    getRoomById,
+    createRoom,
+    updateRoom,
+    removeRoom,
+    getRoomCategories
   };
 };

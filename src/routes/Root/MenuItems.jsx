@@ -1,3 +1,4 @@
+import { list } from 'postcss';
 import React from 'react';
 import {
   MdDashboard,
@@ -41,7 +42,10 @@ import {
   MdSecurity,
   MdComputer,
   MdInsertChart,
-  MdSettingsSuggest
+  MdSettingsSuggest,
+  MdList,
+  MdMenu,
+  MdLocalOffer 
 } from "react-icons/md";
 
 const useMenuItems = () => {
@@ -51,6 +55,21 @@ const useMenuItems = () => {
       title: "Dashboard",
       path: "/dashboard",
       icon: <MdDashboard className="text-lg" />,
+    },
+
+    {
+      title : "Guest Management",
+      icon : <MdPeople className="text-lg" />,
+      list : [{
+        title : "Guest Profile",
+        path : "/guest-management/guest-profile",
+        icon : <MdPeople className="text-lg" />
+      },{
+        title : "Organization",
+        path : "/guest-management/organization",
+        icon : <MdBusiness className="text-lg" />
+
+      }]
     },
     // --- Front Office (Unique Items Only) ---
    {
@@ -77,11 +96,7 @@ const useMenuItems = () => {
       path: "/front-office/self-services",
       icon: <MdAssignment className="text-lg" />,
     },
-    {
-      title: "Guest Profiles",
-      path: "/front-office/profiles",
-      icon: <MdPeople className="text-lg" />,
-    },
+
     {
       title: "Reservation List",
       path: "/front-office/reservation-list",
@@ -201,12 +216,12 @@ const useMenuItems = () => {
       icon: <MdSettingsSuggest className="text-lg" />, 
       list: [
         {
-          title: "Rooms & Category",
-          path: "/front-office/setup/rooms-category",
+          title: "Rooms",
+          path: "/front-office/setup/rooms",
         },
         {
-          title: "Room Rate",
-          path: "/front-office/setup/room-rate",
+          title: "Room category",
+          path: "/front-office/setup/room-category",
         },
         {
           title: "Charge",
@@ -420,6 +435,42 @@ const useMenuItems = () => {
           title: "Calendar View",
           path: "/banquet/calendar",
           icon: <MdDateRange className="text-lg" />,
+        },
+        {
+          title: "Setup",
+          path: "/banquet/setup",
+          list: [
+            {
+              title : "Banquet Units",
+              path : "/banquet/setup/units",
+              icon : <MdDescription className="text-lg" />
+            },
+            {
+              title : "Banquet Sales Item",
+              path : "/banquet/setup/sales-item",
+              icon : <MdLocalOffer   className="text-lg" />
+            },
+            {
+              title : "F&B Items",
+              path : "/banquet/setup/fnb-items",
+              icon : <MdList className="text-lg" /> 
+            },
+            {
+              title : "Preset Menu",
+              path : "/banquet/setup/preset-menu",
+              icon : <MdMenu className="text-lg" />
+            },
+            {
+              title : "Event Types",
+              path : "/banquet/setup/event-types",
+              icon : <MdEvent className="text-lg" />
+            },
+            {
+              title : "Mode Of Payment",
+              path : "/banquet/setup/mode-of-payment",
+              icon : <MdAccountBalanceWallet className="text-lg" />
+            }
+          ],
         },
       ],
     },

@@ -28,8 +28,8 @@ module.exports = {
           secondary: "#336600",
           accent: "#37cdbe", 
           neutral: "#3d4451",
-          "base-100": "#ffffff", 
-          "base-content": "#1f2937",
+          base100: "#ffffff", 
+          basecontent: "#1f2937",
 
         },
       },

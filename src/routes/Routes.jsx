@@ -8,7 +8,7 @@ import Aroot from "./Root/Aroot";
 
 import Reservation from "../pages/Frontoffice/Reservation";
 
-import GuestProfiles from "../pages/Frontoffice/GuestProfiles";
+
 import WalkIn from "../pages/Frontoffice/WalkIn";
 import TodaysEvents from "../pages/Frontoffice/TodaysEvents";
 import GuestSelfServices from "../pages/Frontoffice/GuestSelfServices";
@@ -87,8 +87,8 @@ import CheckedOutRooms from "../pages/Frontoffice/views/CheckedOutRooms";
 import GroupReservations from "../pages/Frontoffice/views/GroupReservations";
 import RatePlan from "../pages/Frontoffice/IncidentalInvoice/RatePlan";
 import IncidentalInvoice from "../pages/Frontoffice/IncidentalInvoice/IncidentalInvoice";
-import RoomsCategory from "../pages/Frontoffice/Setup/RoomsCategory";
-import RoomRate from "../pages/Frontoffice/Setup/RoomRate";
+import RoomsCategory from "../pages/Frontoffice/Setup/Room";
+import RoomRate from "../pages/Frontoffice/Setup/RoomCategory";
 import Charge from "../pages/Frontoffice/Setup/Charge";
 import CorporateClient from "../pages/Frontoffice/Setup/CorporateClient";
 import TravelAgent from "../pages/Frontoffice/Setup/TravelAgent";
@@ -105,8 +105,14 @@ import Department from "../pages/PointOfSale/Setup/Department";
 import KotPrintingSetup from "../pages/PointOfSale/Setup/KotPrintingSetup";
 import Stewards from "../pages/PointOfSale/Setup/Stewards";
 import Slots from "../pages/PointOfSale/Setup/Slots";
-
-
+import GuestProfile from "../pages/Guest/guestProfile/page";
+import Organization from "../pages/Guest/organization/page";
+import BanquetUnits from "../pages/Banquet/Setup/BanquetUnit";
+import BanquetSalesItem from "../pages/Banquet/Setup/BanquetSalesItem";
+import FnbItems from "../pages/Banquet/Setup/FandBItem";
+import PresetMenu from "../pages/Banquet/Setup/PresetMenu";
+import EventTypes from "../pages/Banquet/Setup/EventType";
+import ModeOfPayment from "../pages/Banquet/Setup/ModeOfPrement";
 
 
 
@@ -121,8 +127,8 @@ export const router = createBrowserRouter([
     element: <Root />,
     errorElement: <Error404 />,
     children: [
-   
-   
+
+
 
       // If you still need the Login page, you can add it on a separate path like this:
       {
@@ -139,13 +145,25 @@ export const router = createBrowserRouter([
       // --- Dashboard ---
       {
         path: "dashboard",
-        element: <PrivateRoot><Home/></PrivateRoot>,
+        element: <PrivateRoot><Home /></PrivateRoot>,
+      },
+      {
+        path: "guest-management",
+        children: [{
+          path: "guest-profile",
+          element: <PrivateRoot><GuestProfile /></PrivateRoot>,
+        },
+        {
+          path: "organization",
+          element: <PrivateRoot><Organization /></PrivateRoot>,
+        },
+      ],
       },
 
       // --- Front Office ---
       {
         path: "front-office/reservation",
-        element: <PrivateRoot><Reservation/></PrivateRoot>,
+        element: <PrivateRoot><Reservation /></PrivateRoot>,
       },
       {
         path: "front-office/walk-in",
@@ -159,137 +177,134 @@ export const router = createBrowserRouter([
         path: "front-office/self-services",
         element: <PrivateRoot><GuestSelfServices /></PrivateRoot>,
       },
-      {
-        path: "front-office/profiles",
-        element: <PrivateRoot><GuestProfiles /></PrivateRoot>,
-      },
+     
       {
         path: "front-office/reservation-list",
         element: <PrivateRoot><ReservationList /></PrivateRoot>,
       },
-{
-  path: "front-office",
-  children: [
-    {
-      path: "availability",
-      children: [
-        {
-          index: true, 
-          element: (
-            <PrivateRoot>
-              <Availability />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "room-status",
-          element: (
-            <PrivateRoot>
-              <RoomStatus />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "occupancy-forecast",
-          element: (
-            <PrivateRoot>
-              <OccupancyForecast />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "blocked-rooms",
-          element: (
-            <PrivateRoot>
-              <BlockedRooms />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "no-show-report",
-          element: (
-            <PrivateRoot>
-              <NoShowReport />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "arrival-report",
-          element: (
-            <PrivateRoot>
-              <ArrivalReport />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "due-out-today",
-          element: (
-            <PrivateRoot>
-              <DueOutToday />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "night-audit",
-          element: (
-            <PrivateRoot>
-              <NightAuditProcess />
-            </PrivateRoot>
-          ),
-        },
-      ],
-    },
+      {
+        path: "front-office",
+        children: [
+          {
+            path: "availability",
+            children: [
+              {
+                index: true,
+                element: (
+                  <PrivateRoot>
+                    <Availability />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "room-status",
+                element: (
+                  <PrivateRoot>
+                    <RoomStatus />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "occupancy-forecast",
+                element: (
+                  <PrivateRoot>
+                    <OccupancyForecast />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "blocked-rooms",
+                element: (
+                  <PrivateRoot>
+                    <BlockedRooms />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "no-show-report",
+                element: (
+                  <PrivateRoot>
+                    <NoShowReport />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "arrival-report",
+                element: (
+                  <PrivateRoot>
+                    <ArrivalReport />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "due-out-today",
+                element: (
+                  <PrivateRoot>
+                    <DueOutToday />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "night-audit",
+                element: (
+                  <PrivateRoot>
+                    <NightAuditProcess />
+                  </PrivateRoot>
+                ),
+              },
+            ],
+          },
 
-         // --- 2. VIEWS SUB-MENU (From D3.PNG / D6.PNG) ---
-         {
-  path: "views",
-  children: [
-    { path: "checked-in", element: <PrivateRoot><CheckedInGuest /></PrivateRoot> },
-    { path: "in-house", element: <PrivateRoot><InHouseGuest /></PrivateRoot> },
-    { path: "settlement-pending", element: <PrivateRoot><SettlementPending /></PrivateRoot> },
-    { path: "opened-folio", element: <PrivateRoot><OpenedFolio /></PrivateRoot> },
-    { path: "collection-report", element: <PrivateRoot><CollectionReport /></PrivateRoot> },
-    { path: "checkout-pending", element: <PrivateRoot><CheckoutPending /></PrivateRoot> },
-    { path: "checked-out", element: <PrivateRoot><CheckedOutRooms /></PrivateRoot> },
-    { path: "group-reservations", element: <PrivateRoot><GroupReservations /></PrivateRoot> },
-  ],
-},
+          // --- 2. VIEWS SUB-MENU (From D3.PNG / D6.PNG) ---
+          {
+            path: "views",
+            children: [
+              { path: "checked-in", element: <PrivateRoot><CheckedInGuest /></PrivateRoot> },
+              { path: "in-house", element: <PrivateRoot><InHouseGuest /></PrivateRoot> },
+              { path: "settlement-pending", element: <PrivateRoot><SettlementPending /></PrivateRoot> },
+              { path: "opened-folio", element: <PrivateRoot><OpenedFolio /></PrivateRoot> },
+              { path: "collection-report", element: <PrivateRoot><CollectionReport /></PrivateRoot> },
+              { path: "checkout-pending", element: <PrivateRoot><CheckoutPending /></PrivateRoot> },
+              { path: "checked-out", element: <PrivateRoot><CheckedOutRooms /></PrivateRoot> },
+              { path: "group-reservations", element: <PrivateRoot><GroupReservations /></PrivateRoot> },
+            ],
+          },
 
-{
-  path: "incidental",
-  children: [
-    { path: "rate-plan", element: <PrivateRoot><RatePlan /></PrivateRoot> },
-    { path: "invoice", element: <PrivateRoot><IncidentalInvoice /></PrivateRoot> },
-  ],
-},
+          {
+            path: "incidental",
+            children: [
+              { path: "rate-plan", element: <PrivateRoot><RatePlan /></PrivateRoot> },
+              { path: "invoice", element: <PrivateRoot><IncidentalInvoice /></PrivateRoot> },
+            ],
+          },
 
-{
-  path: "setup",
-  children: [
-    { path: "rooms-category", element: <PrivateRoot><RoomsCategory /></PrivateRoot> },
-    { path: "room-rate", element: <PrivateRoot><RoomRate /></PrivateRoot> },
-    { path: "charge", element: <PrivateRoot><Charge /></PrivateRoot> },
-    { path: "corporate-client", element: <PrivateRoot><CorporateClient /></PrivateRoot> },
-    { path: "travel-agent", element: <PrivateRoot><TravelAgent /></PrivateRoot> },
-    { path: "business-source", element: <PrivateRoot><BusinessSource /></PrivateRoot> },
-  ],
-},
+          {
+            path: "setup",
+            children: [
+              { path: "rooms", element: <PrivateRoot><RoomsCategory /></PrivateRoot> },
+              { path: "room-category", element: <PrivateRoot><RoomRate /></PrivateRoot> },
+              { path: "charge", element: <PrivateRoot><Charge /></PrivateRoot> },
+              { path: "corporate-client", element: <PrivateRoot><CorporateClient /></PrivateRoot> },
+              { path: "travel-agent", element: <PrivateRoot><TravelAgent /></PrivateRoot> },
+              { path: "business-source", element: <PrivateRoot><BusinessSource /></PrivateRoot> },
+            ],
+          },
 
-{
-  path: "settings",
-  children: [
-    { path: "general", element: <PrivateRoot><GeneralSettings /></PrivateRoot> },
-    { path: "print", element: <PrivateRoot><PrintSettings /></PrivateRoot> },
-  ],
-},
-
-
+          {
+            path: "settings",
+            children: [
+              { path: "general", element: <PrivateRoot><GeneralSettings /></PrivateRoot> },
+              { path: "print", element: <PrivateRoot><PrintSettings /></PrivateRoot> },
+            ],
+          },
 
 
 
 
-  ],
-},
+
+
+        ],
+      },
 
       // --- House Keeping ---
       {
@@ -313,138 +328,138 @@ export const router = createBrowserRouter([
         element: <PrivateRoot><LostAndFound /></PrivateRoot>,
       },
       {
-      path: "house-keeping",
-      children: [
-        // --- Main Top-Level Pages ---
-        {
-          path: "daily-status",
-          element: (
-            <PrivateRoot>
-              <DailyStatus />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "room-cleaning",
-          element: (
-            <PrivateRoot>
-              <RoomCleaning />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "blocked-rooms",
-          element: (
-            <PrivateRoot>
-              <BlockedRooms />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "work-orders",
-          element: (
-            <PrivateRoot>
-              <WorkOrders />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "lost-found",
-          element: (
-            <PrivateRoot>
-              <LostAndFound />
-            </PrivateRoot>
-          ),
-        },
+        path: "house-keeping",
+        children: [
+          // --- Main Top-Level Pages ---
+          {
+            path: "daily-status",
+            element: (
+              <PrivateRoot>
+                <DailyStatus />
+              </PrivateRoot>
+            ),
+          },
+          {
+            path: "room-cleaning",
+            element: (
+              <PrivateRoot>
+                <RoomCleaning />
+              </PrivateRoot>
+            ),
+          },
+          {
+            path: "blocked-rooms",
+            element: (
+              <PrivateRoot>
+                <BlockedRooms />
+              </PrivateRoot>
+            ),
+          },
+          {
+            path: "work-orders",
+            element: (
+              <PrivateRoot>
+                <WorkOrders />
+              </PrivateRoot>
+            ),
+          },
+          {
+            path: "lost-found",
+            element: (
+              <PrivateRoot>
+                <LostAndFound />
+              </PrivateRoot>
+            ),
+          },
 
-        // --- Incidental Invoice Dropdown ---
-        {
-          path: "incidental-invoice",
-          children: [
-            {
-              path: "rate-plan",
-              element: (
-                <PrivateRoot>
-                  <RatePlan />
-                </PrivateRoot>
-              ),
-            },
-            {
-              path: "details", 
-              element: (
-                <PrivateRoot>
-                  <IncidentalInvoiceDetails />
-                </PrivateRoot>
-              ),
-            },
-          ],
-        },
+          // --- Incidental Invoice Dropdown ---
+          {
+            path: "incidental-invoice",
+            children: [
+              {
+                path: "rate-plan",
+                element: (
+                  <PrivateRoot>
+                    <RatePlan />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "details",
+                element: (
+                  <PrivateRoot>
+                    <IncidentalInvoiceDetails />
+                  </PrivateRoot>
+                ),
+              },
+            ],
+          },
 
-        // --- Setup Dropdown ---
-        {
-          path: "setup",
-          children: [
-            {
-              path: "house-keepers",
-              element: (
-                <PrivateRoot>
-                  <HouseKeepers />
-                </PrivateRoot>
-              ),
-            },
-            {
-              path: "status",
-              element: (
-                <PrivateRoot>
-                  <StatusSetup />
-                </PrivateRoot>
-              ),
-            },
-            {
-              path: "remarks",
-              element: (
-                <PrivateRoot>
-                  <RemarksSetup />
-                </PrivateRoot>
-              ),
-            },
-            {
-              path: "work-order-category",
-              element: (
-                <PrivateRoot>
-                  <WorkOrderCategory />
-                </PrivateRoot>
-              ),
-            },
-            {
-              path: "units",
-              element: (
-                <PrivateRoot>
-                  <UnitsSetup />
-                </PrivateRoot>
-              ),
-            },
-          ],
-        },
+          // --- Setup Dropdown ---
+          {
+            path: "setup",
+            children: [
+              {
+                path: "house-keepers",
+                element: (
+                  <PrivateRoot>
+                    <HouseKeepers />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "status",
+                element: (
+                  <PrivateRoot>
+                    <StatusSetup />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "remarks",
+                element: (
+                  <PrivateRoot>
+                    <RemarksSetup />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "work-order-category",
+                element: (
+                  <PrivateRoot>
+                    <WorkOrderCategory />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "units",
+                element: (
+                  <PrivateRoot>
+                    <UnitsSetup />
+                  </PrivateRoot>
+                ),
+              },
+            ],
+          },
 
-        // --- Settings ---
-        {
-          path: "settings",
-          element: (
-            <PrivateRoot>
-              <HouseKeepingSettings />
-            </PrivateRoot>
-          ),
-        },
-      ],
-    },
+          // --- Settings ---
+          {
+            path: "settings",
+            element: (
+              <PrivateRoot>
+                <HouseKeepingSettings />
+              </PrivateRoot>
+            ),
+          },
+        ],
+      },
 
       // next task
 
       // --- Point Of Sale --: -
       {
         path: "pos/dashboard",
-         element: <PrivateRoot><DashBoard /></PrivateRoot>,
+        element: <PrivateRoot><DashBoard /></PrivateRoot>,
       },
       {
         path: "pos/main",
@@ -458,112 +473,182 @@ export const router = createBrowserRouter([
         path: "pos/kitchen-display",
         element: <PrivateRoot><KitchenDisplaySystem /></PrivateRoot>,
       },
-       {
+      {
         path: "/pos/Reports",
-        element: <PrivateRoot>< Reports/></PrivateRoot>,
+        element: <PrivateRoot>< Reports /></PrivateRoot>,
       },
-      
 
-{
-  path: "pos",
+
+      {
+        path: "pos",
+        children: [
+          // --- Setup Dropdown ---
+          {
+            path: "setup",
+            children: [
+              {
+                path: "outlets",
+                element: (
+                  <PrivateRoot>
+                    <Outlets />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "tables",
+                element: (
+                  <PrivateRoot>
+                    <Tables />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "item-category",
+                element: (
+                  <PrivateRoot>
+                    <ItemCategory />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "rate-plan",
+                element: (
+                  <PrivateRoot>
+                    <RatePlan />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "department",
+                element: (
+                  <PrivateRoot>
+                    <Department />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "kot-printing",
+                element: (
+                  <PrivateRoot>
+                    <KotPrintingSetup />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "slots",
+                element: (
+                  <PrivateRoot>
+                    <Slots />
+                  </PrivateRoot>
+                ),
+              },
+              {
+                path: "stewards",
+                element: (
+                  <PrivateRoot>
+                    <Stewards />
+                  </PrivateRoot>
+                ),
+              },
+            ],
+          },
+
+          // --- Settings ---
+          {
+            path: "settings",
+            element: (
+              <PrivateRoot>
+                <PosSettings />
+              </PrivateRoot>
+            ),
+          },
+        ],
+      },
+
+
+      // --- Banquet ---
+  {
+  path: "banquet",
   children: [
-    // --- Setup Dropdown ---
+    {
+      path: "new-booking",
+      element: (
+        <PrivateRoot>
+          <NewBooking />
+        </PrivateRoot>
+      ),
+    },
+    {
+      path: "booking-list",
+      element: (
+        <PrivateRoot>
+          <BookingList />
+        </PrivateRoot>
+      ),
+    },
+    {
+      path: "calendar",
+      element: (
+        <PrivateRoot>
+          <CalendarView />
+        </PrivateRoot>
+      ),
+    },
     {
       path: "setup",
       children: [
         {
-          path: "outlets",
+          path: "units",
           element: (
             <PrivateRoot>
-              <Outlets />
+              <BanquetUnits />
             </PrivateRoot>
           ),
         },
         {
-          path: "tables",
+          path: "sales-item",
           element: (
             <PrivateRoot>
-              <Tables />
+              <BanquetSalesItem />
             </PrivateRoot>
           ),
         },
         {
-          path: "item-category",
+          path: "fnb-items",
           element: (
             <PrivateRoot>
-              <ItemCategory />
+              <FnbItems />
             </PrivateRoot>
           ),
         },
         {
-          path: "rate-plan",
+          path: "preset-menu",
           element: (
             <PrivateRoot>
-              <RatePlan />
+              <PresetMenu />
             </PrivateRoot>
           ),
         },
         {
-          path: "department",
+          path: "event-types",
           element: (
             <PrivateRoot>
-              <Department />
+              <EventTypes />
             </PrivateRoot>
           ),
         },
         {
-          path: "kot-printing",
+          path: "mode-of-payment",
           element: (
             <PrivateRoot>
-              <KotPrintingSetup />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "slots",
-          element: (
-            <PrivateRoot>
-              <Slots />
-            </PrivateRoot>
-          ),
-        },
-        {
-          path: "stewards",
-          element: (
-            <PrivateRoot>
-              <Stewards />
+              <ModeOfPayment />
             </PrivateRoot>
           ),
         },
       ],
     },
-    
-    // --- Settings ---
-    {
-      path: "settings",
-      element: (
-        <PrivateRoot>
-          <PosSettings />
-        </PrivateRoot>
-      ),
-    },
   ],
 },
-
-
-      // --- Banquet ---
-      {
-        path: "banquet/new-booking",
-        element: <PrivateRoot><NewBooking /></PrivateRoot>,
-      },
-      {
-        path: "banquet/booking-list",
-        element: <PrivateRoot><BookingList /></PrivateRoot>,
-      },
-      {
-        path: "banquet/calendar",
-        element: <PrivateRoot><CalendarView /></PrivateRoot>,
-      },
 
       // --- Stores ---
       {
@@ -712,7 +797,7 @@ export const router = createBrowserRouter([
         path: "administration/user-activities",
         element: <PrivateRoot><UserActivite /></PrivateRoot>,
       },
-      
+
       // --- Logout ---
       {
         path: "logout",

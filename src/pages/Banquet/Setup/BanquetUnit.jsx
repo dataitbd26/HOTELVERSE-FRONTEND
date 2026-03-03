@@ -1,6 +1,7 @@
+// BanquetManager.jsx
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet";
-import { useUnit } from "../../../Hook/useUnit"; 
+import { useBanquet } from "../../../Hook/useBanquet"; 
 import SkeletonLoader from "../../../components/SkeletonLoader";
 import useAuth from "../../../Hook/useAuth";
 import { getPaginationRange } from "../../../utilities/paginationUtils";
@@ -8,7 +9,7 @@ import PageHeader from "../../../components/PageHeader";
 
 import { 
   FaEdit, FaTrash, FaPlus, FaTimes, 
-  FaChevronLeft, FaChevronRight, FaLayerGroup, FaTags,
+  FaChevronLeft, FaChevronRight, FaBuilding, FaTags,
   FaCheck, FaBan
 } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -16,28 +17,20 @@ import Swal from "sweetalert2";
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 15, 20, 50];
 
-const UnitManager = () => {
+const BanquetManager = () => {
   const { user } = useAuth();
   const userBranch = user?.branch || "";
 
-  // 🔴 DIAGNOSTIC LOG 1: Check if the user object has the branch
-  useEffect(() => {
-    console.log("🕵️ User Object from Auth:", user);
-    console.log("🕵️ Extracted Branch:", userBranch);
-    if (!userBranch) {
-      console.warn("⚠️ WARNING: userBranch is missing! Data will NOT fetch and saves will be blocked.");
-    }
-  }, [user, userBranch]);
-
   const { 
-    getAllUnits, 
-    createUnit, 
-    updateUnit, 
-    removeUnit, 
+    getAllBanquets, 
+    createBanquet, 
+    updateBanquet, 
+    removeBanquet, 
     loading 
-  } = useUnit();
+  } = useBanquet();
 
-  const [unitsList, setUnitsList] = useState([]);
+  // State Management
+  const [banquetList, setBanquetList] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -45,12 +38,14 @@ const UnitManager = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   
+  // Inline Form State
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-  const [formData, setFormData] = useState({ name: "" });
+  const [formData, setFormData] = useState({ name: "", capacity: "" });
 
+  // --- Search Debounce Logic ---
   useEffect(() => {
     const handler = setTimeout(() => {
       if (debouncedSearch !== searchInput) {
@@ -61,11 +56,12 @@ const UnitManager = () => {
     return () => clearTimeout(handler);
   }, [searchInput, debouncedSearch]);
 
-  const loadUnits = useCallback(async () => {
+  // --- Data Fetching ---
+  const loadBanquets = useCallback(async () => {
     if (!userBranch) return; 
 
     try {
-      const data = await getAllUnits({ 
+      const data = await getAllBanquets({ 
         page: currentPage, 
         limit: itemsPerPage, 
         search: debouncedSearch,
@@ -73,27 +69,28 @@ const UnitManager = () => {
       });
       
       if (data) {
-        setUnitsList(data.data || []);
+        setBanquetList(data.data || []);
         setTotalPages(data.pagination?.totalPages || 1);
         setTotalItems(data.pagination?.totalDocuments || 0);
       }
     } catch (error) {
-      toast.error("Failed to load units");
+      toast.error("Failed to load banquets");
     }
-  }, [getAllUnits, currentPage, itemsPerPage, debouncedSearch, userBranch]);
+  }, [getAllBanquets, currentPage, itemsPerPage, debouncedSearch, userBranch]);
 
   useEffect(() => { 
-    loadUnits(); 
-  }, [loadUnits]);
+    loadBanquets(); 
+  }, [loadBanquets]);
 
-  const handleOpenForm = useCallback((unit = null) => {
+  // --- Handlers ---
+  const handleOpenForm = useCallback((banquet = null) => {
     setErrors({}); 
-    if (unit) {
-      setEditingId(unit._id);
-      setFormData({ name: unit.name });
+    if (banquet) {
+      setEditingId(banquet._id);
+      setFormData({ name: banquet.name, capacity: banquet.capacity });
     } else {
       setEditingId(null);
-      setFormData({ name: "" });
+      setFormData({ name: "", capacity: "" });
     }
     setIsFormOpen(true);
   }, []);
@@ -101,13 +98,16 @@ const UnitManager = () => {
   const handleCloseForm = useCallback(() => {
     setIsFormOpen(false);
     setEditingId(null);
-    setFormData({ name: "" });
+    setFormData({ name: "", capacity: "" });
     setErrors({});
   }, []);
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Unit Name is required.";
+    if (!formData.name?.trim()) newErrors.name = "Banquet Name is required.";
+    if (!formData.capacity || isNaN(formData.capacity) || Number(formData.capacity) <= 0) {
+      newErrors.capacity = "Valid capacity is required.";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -120,22 +120,21 @@ const UnitManager = () => {
     try {
       const payload = { 
         name: formData.name.trim(), 
+        capacity: Number(formData.capacity),
         branch: userBranch 
       };
       
       if (editingId) {
-        await updateUnit(editingId, payload);
-        toast.success("Unit updated successfully");
+        await updateBanquet(editingId, payload);
+        toast.success("Banquet updated successfully");
       } else {
-        await createUnit(payload);
-        toast.success("Unit created successfully");
+        await createBanquet(payload);
+        toast.success("Banquet created successfully");
       }
       
       handleCloseForm();
-      loadUnits();
+      loadBanquets();
     } catch (err) {
-      // 🔴 DIAGNOSTIC LOG 2: Catching backend rejection
-      console.error("Save Error Details:", err);
       toast.error(err.response?.data?.error || err.response?.data?.message || "Execution failed. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -159,18 +158,18 @@ const UnitManager = () => {
 
     if (result.isConfirmed) {
       try {
-        await removeUnit(id);
+        await removeBanquet(id);
         toast.success("Deleted successfully");
-        if (unitsList.length === 1 && currentPage > 1) {
+        if (banquetList.length === 1 && currentPage > 1) {
           setCurrentPage(prev => prev - 1);
         } else {
-          loadUnits();
+          loadBanquets();
         }
       } catch (err) { 
         toast.error(err.response?.data?.error || err.response?.data?.message || "Delete failed"); 
       }
     }
-  }, [removeUnit, loadUnits, unitsList.length, currentPage]);
+  }, [removeBanquet, loadBanquets, banquetList.length, currentPage]);
 
   const paginationRange = useMemo(() => 
     getPaginationRange(currentPage, totalPages), 
@@ -180,15 +179,16 @@ const UnitManager = () => {
     <div className="bg-[#f1f5f9] dark:bg-gray-900 min-h-screen p-4 md:p-6 text-[#1f2937] dark:text-gray-100 transition-colors duration-300 relative overflow-hidden font-sans">
       
       <Helmet>
-        <title>Units Management | Admin Dashboard</title>
+        <title>Banquets | Admin Dashboard</title>
+        <meta name="description" content="Manage banquet halls and capacities." />
       </Helmet>
 
       {/* Header Area */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <PageHeader 
-          title="Measurement Units" 
-          subtitle="Manage operational units" 
-          icon={<FaLayerGroup className="text-[#66cc00]" />} 
+          title="Banquets" 
+          subtitle="Manage banquet halls and capacities" 
+          icon={<FaBuilding className="text-[#66cc00]" />} 
         />
       </div>
 
@@ -206,12 +206,12 @@ const UnitManager = () => {
 
           <div className="flex items-center gap-4 flex-wrap sm:flex-nowrap w-full sm:w-auto">
             <div className="flex items-center gap-2 w-full sm:w-auto">
-              <label htmlFor="searchUnit" className="text-sm font-bold hidden sm:block">Search:</label>
+              <label htmlFor="searchBanquet" className="text-sm font-bold hidden sm:block">Search:</label>
               <input 
-                id="searchUnit"
+                id="searchBanquet"
                 type="search"
                 className="border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded px-3 py-1.5 text-sm w-full sm:w-64 focus:ring-1 focus:ring-[#66cc00] outline-none transition-all"
-                placeholder="Filter by unit name..."
+                placeholder="Filter by name..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
@@ -237,10 +237,11 @@ const UnitManager = () => {
         <div className="overflow-x-auto p-5 min-h-[400px]">
           <table className="w-full text-sm border-collapse">
             <thead>
+              {/* Green Header */}
               <tr className="bg-[#66cc00] text-white font-medium border border-[#66cc00]">
-                <th scope="col" className="px-4 py-2.5 text-left text-sm" colSpan="2">
-                  Unit Details
-                </th>
+                <th scope="col" className="px-4 py-2.5 text-left text-sm">Banquet Name</th>
+                <th scope="col" className="px-4 py-2.5 text-left text-sm w-48">Capacity</th>
+                <th scope="col" className="px-4 py-2.5 text-right text-sm w-56">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-gray-700 border-x border-b border-slate-200 dark:border-gray-700">
@@ -248,22 +249,37 @@ const UnitManager = () => {
               {/* 🟢 INLINE EDIT/ADD FORM ROW */}
               {isFormOpen && (
                 <tr className="bg-slate-50 dark:bg-gray-700/30">
-                  <td className="px-4 py-3 align-middle">
+                  <td className="px-4 py-3 align-middle relative">
                     <input
                       type="text"
-                      placeholder="Enter unit name (e.g., Kg, Litre, Box)..."
-                      className={`w-full max-w-lg border ${errors.name ? 'border-red-500' : 'border-slate-300 dark:border-gray-600'} bg-white dark:bg-gray-800 rounded px-3 py-1.5 outline-none focus:ring-1 focus:ring-[#66cc00] transition-all`}
+                      placeholder="Enter banquet name..."
+                      className={`w-full border ${errors.name ? 'border-red-500' : 'border-slate-300 dark:border-gray-600'} bg-white dark:bg-gray-800 rounded px-3 py-1.5 outline-none focus:ring-1 focus:ring-[#66cc00] transition-all`}
                       value={formData.name}
                       autoFocus
                       onChange={(e) => {
-                        setFormData({ name: e.target.value });
-                        if (errors.name) setErrors({});
+                        setFormData(prev => ({ ...prev, name: e.target.value }));
+                        if (errors.name) setErrors(prev => ({ ...prev, name: null }));
                       }}
                       onKeyDown={(e) => e.key === 'Enter' && handleSave()}
                     />
                     {errors.name && <p className="text-red-500 text-xs mt-1 absolute">{errors.name}</p>}
                   </td>
-                  <td className="px-4 py-3 text-right align-middle w-56">
+                  <td className="px-4 py-3 align-middle relative">
+                    <input
+                      type="number"
+                      min="1"
+                      placeholder="e.g. 50"
+                      className={`w-full border ${errors.capacity ? 'border-red-500' : 'border-slate-300 dark:border-gray-600'} bg-white dark:bg-gray-800 rounded px-3 py-1.5 outline-none focus:ring-1 focus:ring-[#66cc00] transition-all`}
+                      value={formData.capacity}
+                      onChange={(e) => {
+                        setFormData(prev => ({ ...prev, capacity: e.target.value }));
+                        if (errors.capacity) setErrors(prev => ({ ...prev, capacity: null }));
+                      }}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+                    />
+                    {errors.capacity && <p className="text-red-500 text-xs mt-1 absolute">{errors.capacity}</p>}
+                  </td>
+                  <td className="px-4 py-3 text-right align-middle">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={handleSave}
@@ -287,33 +303,36 @@ const UnitManager = () => {
 
               {/* Data Rows */}
               {loading ? (
-                <tr><td colSpan="2" className="py-20 text-center"><SkeletonLoader /></td></tr>
-              ) : unitsList.length === 0 && !isFormOpen ? (
+                <tr><td colSpan="3" className="py-20 text-center"><SkeletonLoader /></td></tr>
+              ) : banquetList.length === 0 && !isFormOpen ? (
                 <tr>
-                  <td colSpan="2" className="py-24 text-center">
+                  <td colSpan="3" className="py-24 text-center">
                     <div className="flex flex-col items-center justify-center text-slate-400">
                       <FaTags size={48} className="mb-4 opacity-50" />
-                      <p className="text-lg font-medium">No units found</p>
+                      <p className="text-lg font-medium">No banquets found</p>
                       <p className="text-sm mt-1">Click 'Add New Record' to create one.</p>
                     </div>
                   </td>
                 </tr>
               ) : (
-                unitsList.map((unit) => (
-                  <tr key={unit._id} className="hover:bg-slate-50 dark:hover:bg-gray-700/20 transition-colors">
+                banquetList.map((banquet) => (
+                  <tr key={banquet._id} className="hover:bg-slate-50 dark:hover:bg-gray-700/20 transition-colors">
                     <td className="px-4 py-3 align-middle text-slate-700 dark:text-gray-200">
-                      {unit.name}
+                      {banquet.name}
+                    </td>
+                    <td className="px-4 py-3 align-middle text-slate-700 dark:text-gray-200">
+                      {banquet.capacity} Persons
                     </td>
                     <td className="px-4 py-3 text-right align-middle">
                       <div className="flex items-center justify-end gap-2">
                         <button 
-                          onClick={() => handleOpenForm(unit)} 
+                          onClick={() => handleOpenForm(banquet)} 
                           className="flex items-center gap-1.5 px-3 py-1 border border-slate-300 dark:border-gray-600 bg-slate-100 hover:bg-slate-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-slate-700 dark:text-gray-200 rounded text-sm transition-colors"
                         >
                           <FaEdit size={12} className="text-slate-500 dark:text-slate-400" /> Edit
                         </button>
                         <button 
-                          onClick={() => handleDelete(unit._id)} 
+                          onClick={() => handleDelete(banquet._id)} 
                           className="flex items-center gap-1.5 px-3 py-1 border border-slate-300 dark:border-gray-600 bg-slate-100 hover:bg-red-100 dark:bg-gray-700 dark:hover:bg-red-900/40 text-slate-700 hover:text-red-600 dark:text-gray-200 rounded text-sm transition-colors"
                         >
                           <FaTimes size={12} className="text-slate-500 dark:text-slate-400" /> Delete
@@ -331,7 +350,7 @@ const UnitManager = () => {
         {totalItems > 0 && (
           <div className="px-6 py-4 bg-slate-50 dark:bg-gray-800 border-t border-slate-200 dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-4 text-gray-600 dark:text-gray-300">
             <div className="text-xs font-bold uppercase">
-              Showing <span className="text-[#66cc00]">{unitsList.length}</span> of {totalItems} Results
+              Showing <span className="text-[#66cc00]">{banquetList.length}</span> of {totalItems} Results
             </div>
             <div className="flex items-center gap-1 join" aria-label="Pagination">
               <button 
@@ -375,4 +394,4 @@ const UnitManager = () => {
   );
 };
 
-export default UnitManager;
+export default BanquetManager;
